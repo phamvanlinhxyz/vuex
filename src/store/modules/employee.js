@@ -1,29 +1,64 @@
-import axios from "axios";
+import { constants } from '@/config';
+import axios from 'axios';
 
 const state = {
   isLoadData: true,
+  isChangeData: false,
   employees: [],
   totalEmployee: 0,
   totalPage: 0,
+  widthTable: 0,
+  filter: {
+    pageSize: 10,
+    pageNumber: 1,
+    employeeFilter: '',
+  },
+  singleEmployee: {},
 };
 
 const mutations = {
-  getAllEmployee(state, payload) {
+  changeWidthTable(state, payload) {
+    state.widthTable = payload;
+  },
+  getEmployees(state, payload) {
     state.employees = payload.Data;
     state.totalEmployee = payload.TotalRecord;
     state.totalPage = payload.TotalPage;
     state.isLoadData = false;
+    state.isChangeData = false;
+  },
+  changeData(state) {
+    state.isChangeData = true;
+  },
+  setFilterInfo(state, payload) {
+    state.filter = payload;
+  },
+  selectEmp(state, payload) {
+    state.singleEmployee = payload;
   },
 };
 
 const actions = {
-  async getAllEmployee(context, filter) {
+  changeWidthTable(context, width) {
+    context.commit('changeWidthTable', width);
+  },
+  changeData(context) {
+    context.commit('changeData');
+  },
+  setFilterInfo(context, filter) {
+    context.commit('setFilterInfo', filter);
+  },
+  selectEmp(context, emp) {
+    context.commit('selectEmp', emp);
+  },
+  async getEmployees(context) {
+    context.commit('changeData');
     try {
       const res = await axios.get(
-        `https://amis.manhnv.net/api/v1/Employees/filter?pageSize=${filter.pageSize}&pageNumber=${filter.pageNumber}&employeeFilter=${filter.employeeFilter}`
+        `${constants.API_URL}/Employees/filter?pageSize=${state.filter.pageSize}&pageNumber=${state.filter.pageNumber}&employeeFilter=${state.filter.employeeFilter}`
       );
 
-      context.commit("getAllEmployee", res.data);
+      context.commit('getEmployees', res.data);
     } catch (error) {
       console.error(error);
     }

@@ -1,20 +1,26 @@
 <template>
-  <router-view></router-view>
+  <div class="m-container">
+    <the-menu-vue />
+    <div class="m-content">
+      <the-navbar-vue />
+      <the-content-vue />
+    </div>
+  </div>
 </template>
 
 <script>
+import TheContentVue from "./components/layouts/TheContent.vue";
+import TheMenuVue from "./components/layouts/TheMenu.vue";
+import TheNavbarVue from "./components/layouts/TheNavbar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
+    TheContentVue,
+    TheMenuVue,
+    TheNavbarVue,
   },
-  created() {
-    var filter = {
-      pageSize: 10, pageNumber: 1, employeeFilter: null
-    }
-    this.$store.dispatch("getAllEmployee", filter)
-  },
-}
+};
 </script>
 
 <style>

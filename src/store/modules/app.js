@@ -1,9 +1,10 @@
 const state = {
   isShowPopup: false,
   isShowDialog: false,
+  contentHeaderTop: 0,
   dialog: {
-    type: "success",
-    message: "",
+    type: 'success',
+    message: '',
   },
 };
 
@@ -18,17 +19,23 @@ const mutations = {
     state.dialog.type = payload.type;
     state.dialog.message = payload.message;
   },
+  setContentHeaderTop(state, payload) {
+    state.contentHeaderTop = payload;
+  },
 };
 
 const actions = {
   togglePopup(context) {
-    context.commit("togglePopup");
+    context.commit('togglePopup');
   },
   toggleDialog(context) {
-    context.commit("toggleDialog");
+    context.commit('toggleDialog');
   },
   setDialog(context, dialog) {
-    context.commit("setDialog", dialog);
+    context.commit('setDialog', dialog);
+  },
+  setContentHeaderTop(context, top) {
+    context.commit('setContentHeaderTop', top);
   },
 };
 

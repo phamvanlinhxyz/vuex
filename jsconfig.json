@@ -16,8 +16,5 @@
       "dom.iterable",
       "scripthost"
     ],
-    "types": [
-      "element-plus/global"
-    ]
   }
 }

@@ -457,8 +457,7 @@
 </template>
 
 <script>
-import store from "@/store";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import moment from "moment";
 
 export default {
@@ -478,9 +477,23 @@ export default {
     console.log(this.singleEmployee);
   },
   methods: {
+    /**
+     * Map Actions
+     * Author: LinhPV (13/07/22)
+     */
+    ...mapActions(["togglePopup"]),
+    /**
+     * Đong hoặc mở popup
+     * Author: LinhPV (12/07/22)
+     */
     togglePopup() {
-      store.dispatch("togglePopup");
+      this.togglePopup();
     },
+    /**
+     * Format date value cho input
+     * Author: LinhPV (12/07/22)
+     * @param {string} date
+     */
     formatDateValue(date) {
       return date ? moment(date).format("YYYY-MM-DD") : null;
     },

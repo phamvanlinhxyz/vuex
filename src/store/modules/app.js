@@ -1,10 +1,12 @@
 const state = {
   isShowPopup: false,
   isShowDialog: false,
+  isLoading: false,
   contentHeaderTop: 0,
   dialog: {
     type: 'success',
     message: '',
+    action: 0, // 0: không có action, 1: Thêm, 2: Sửa, 3: Xóa
   },
 };
 
@@ -15,9 +17,11 @@ const mutations = {
   toggleDialog(state) {
     state.isShowDialog = !state.isShowDialog;
   },
+  toggleLoading(state) {
+    state.isLoading = !state.isLoading;
+  },
   setDialog(state, payload) {
-    state.dialog.type = payload.type;
-    state.dialog.message = payload.message;
+    state.dialog = payload;
   },
   setContentHeaderTop(state, payload) {
     state.contentHeaderTop = payload;
@@ -36,6 +40,9 @@ const actions = {
   },
   setContentHeaderTop(context, top) {
     context.commit('setContentHeaderTop', top);
+  },
+  toggleLoading(context) {
+    context.commit('toggleLoading');
   },
 };
 

@@ -27,6 +27,9 @@ const mutations = {
     state.isLoadData = false;
     state.isChangeData = false;
   },
+  loadData(state) {
+    state.isLoadData = true;
+  },
   changeData(state) {
     state.isChangeData = true;
   },
@@ -35,6 +38,12 @@ const mutations = {
   },
   selectEmp(state, payload) {
     state.singleEmployee = payload;
+  },
+  deleteEmployee(state, payload) {
+    state.employees = state.employees.filter((employee) => {
+      return employee.EmployeeId != payload;
+    });
+    state.totalEmployee = state.totalEmployee - 1;
   },
 };
 
@@ -51,6 +60,9 @@ const actions = {
   selectEmp(context, emp) {
     context.commit('selectEmp', emp);
   },
+  loadData(context) {
+    context.commit('loadData');
+  },
   async getEmployees(context) {
     context.commit('changeData');
     try {
@@ -61,6 +73,27 @@ const actions = {
       context.commit('getEmployees', res.data);
     } catch (error) {
       console.error(error);
+    }
+  },
+  async deleteEmployee(context, empId) {
+    // Dispatch loading
+    context.dispatch('toggleLoading');
+    try {
+      await axios.delete(`${constants.API_URL}/Employees/${empId}`);
+
+      // Commit lọc data
+      context.commit('deleteEmployee', empId);
+
+      // Dispatch thông báo thành công
+      context.dispatch('setDialog', {
+        type: 'success',
+        message: 'Xóa nhân viên thành công.',
+        action: 0,
+      });
+      context.dispatch('toggleLoading');
+      context.dispatch('toggleDialog');
+    } catch (error) {
+      console.log(error);
     }
   },
 };

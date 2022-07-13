@@ -365,7 +365,7 @@
       <li class="m-dropdown-item">
         <a class="m-dropdown-item-link">Nhân bản</a>
       </li>
-      <li class="m-dropdown-item m-item-delete">
+      <li class="m-dropdown-item m-item-delete" @click="deleteEmp">
         <a class="m-dropdown-item-link">Xóa</a>
       </li>
       <li class="m-dropdown-item">
@@ -376,8 +376,7 @@
 </template>
 
 <script>
-import store from "@/store";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import moment from "moment";
 
 export default {
@@ -387,38 +386,76 @@ export default {
       isShowDropdown: false,
       dropdownTop: 0,
       dropdownLeft: 0,
-      selectedEmp: {},
     };
   },
   computed: mapState({
     employees: (state) => state.employee.employees,
     isLoadData: (state) => state.employee.isLoadData,
     isChangeData: (state) => state.employee.isChangeData,
+    singleEmployee: (state) => state.employee.singleEmployee,
   }),
   methods: {
+    /**
+     * Map action
+     * Author: LinhPV (13/07/22)
+     */
+    ...mapActions([
+      "selectEmp",
+      "togglePopup",
+      "setDialog",
+      "toggleDialog",
+      "changeWidthTable",
+    ]),
+    /**
+     * Người dùng chọn sửa nhân viên
+     * Author: LinhPV (12/07/22)
+     */
     editEmployee(emp) {
-      store.dispatch("selectEmp", emp);
-      store.dispatch("togglePopup");
+      this.selectEmp(emp);
+      this.togglePopup();
     },
+    /**
+     * Mở dropdown tùy chọn
+     * Author: LinhPV (12/07/22)
+     * @param {object} emp
+     * @param {event} event
+     */
     toggleDropdown(emp, event) {
       if (!this.isShowDropdown) {
-        this.selectedEmp = emp;
-        store.dispatch("selectEmp", emp);
+        this.selectEmp(emp);
         let rect = event.currentTarget.getBoundingClientRect();
         this.dropdownTop = rect.top + 20;
         this.dropdownLeft = rect.left + 40;
       }
       this.isShowDropdown = !this.isShowDropdown;
     },
+    /**
+     * Format định dạng ngày tháng
+     * Author: LinhPV (12/07/22)
+     * @param {string} date
+     */
     formatDate(date) {
-      return date ? moment(date).format("DD/MM/YYYY") : null;           
+      return date ? moment(date).format("DD/MM/YYYY") : null;
+    },
+    /**
+     * Người dùng chọn xóa nhân viên
+     * Author: LinhPV (13/07/22)
+     */
+    deleteEmp() {
+      // Hiển thị dialog cofirm
+      this.setDialog({
+        type: "warning",
+        message: `Bạn có thực sự muốn xóa Nhân viên <${this.singleEmployee.EmployeeCode}> không?`,
+        action: 3,
+      });
+      this.toggleDialog();
+      // Tắt dropdown
+      this.isShowDropdown = false;
     },
   },
   updated() {
-    store.dispatch(
-      "changeWidthTable",
-      document.querySelector(".m-table").offsetWidth
-    );
+    // Cập nhật chiều rộng table
+    this.changeWidthTable(document.querySelector(".m-table").offsetWidth);
   },
 };
 </script>

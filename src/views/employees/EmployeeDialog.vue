@@ -48,7 +48,7 @@
                   m-button-size-default
                   m-button-border-false
                 "
-                @click="confirmDelete"
+                @click="confirmClick"
               >
                 <div class="m-button-text">Có</div>
               </button>
@@ -80,6 +80,7 @@
                     m-button-size-default
                     m-button-border-false
                   "
+                  @click="closeDialog"
                 >
                   <div class="m-button-text">Không</div>
                 </button>
@@ -105,15 +106,49 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
+
 export default {
   name: "EmployeeDialog",
   data() {
     return {
-      dialog: {
-        type: "success",
-        message: "",
-      },
+      icon: "",
     };
+  },
+  computed: mapState({
+    dialog: (state) => state.app.dialog,
+    singleEmployee: (state) => state.employee.singleEmployee,
+  }),
+  methods: {
+    /**
+     * Map action
+     * Author: LinhPV (13/07/22)
+     */
+    ...mapActions(["toggleDialog", "deleteEmployee"]),
+    /**
+     * Đóng dialog
+     * Author: LinhPV (13/07/22)
+     */
+    closeDialog() {
+      this.toggleDialog();
+    },
+    /**
+     * Xử lý sự kiện confirm click
+     * Author: LinhPV (13/07/22)
+     */
+    confirmClick() {
+      switch (this.dialog.action) {
+        // Delete
+        case 3:
+          // Đóng dialog
+          this.toggleDialog();
+          // Xóa nhân viên
+          this.deleteEmployee(this.singleEmployee.EmployeeId);
+      }
+    },
+  },
+  created() {
+    this.icon = `m-icon-${this.dialog.type}`;
   },
 };
 </script>

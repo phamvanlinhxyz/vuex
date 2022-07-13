@@ -2,11 +2,13 @@
   <div class="m-menu">
     <div class="m-logo-container">
       <div class="m-option-icon"></div>
-      <img
-        class="m-logo-icon"
-        src="../../assets/img/Logo_Module_TiengViet_White.66947422.svg"
-        alt="Logo_Module_TiengViet_White"
-      />
+      <router-link to="/">
+        <img
+          class="m-logo-icon"
+          src="../../assets/img/Logo_Module_TiengViet_White.66947422.svg"
+          alt="Logo_Module_TiengViet_White"
+        />
+      </router-link>
     </div>
     <div class="m-menu-item">
       <div class="m-tooltip-content">

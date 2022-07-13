@@ -158,8 +158,7 @@
 </template>
 
 <script>
-import store from "@/store";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "EmployeePagenation",
@@ -181,6 +180,15 @@ export default {
     pageSize: Number,
   },
   methods: {
+    /**
+     * Map actions
+     */
+    ...mapActions(["setFilterInfo", "getEmployees"]),
+    /**
+     * Chọn số bản ghi trên 1 trang
+     * Author: LinhPV (12/07/22)
+     * @param {event} e 
+     */
     selectTotalRecord(e) {
       // Gán value cho input
       document.querySelector(".m-combo-input").value =
@@ -194,6 +202,11 @@ export default {
       // Tắt dropdown chọn bản ghi
       this.isShowRecordDropdown = false;
     },
+    /**
+     * Mở combobox chọn số bản ghi
+     * Author: LinhPV (12/07/22)
+     * @param {event} e 
+     */
     openSelectTotalRecordPanel(e) {
       if (!this.isShowRecordDropdown) {
         let rect = e.currentTarget.getBoundingClientRect();
@@ -202,6 +215,11 @@ export default {
       }
       this.isShowRecordDropdown = !this.isShowRecordDropdown;
     },
+    /**
+     * Chọn số page
+     * Author: LinhPV (12/07/22)
+     * @param {event} e 
+     */
     selectNumberPage(e) {
       // Lấy số trang
       let number = parseInt(e.currentTarget.textContent);
@@ -211,10 +229,15 @@ export default {
         employeeFilter: this.filter.employeeFilter,
       });
     },
+    /**
+     * Thay đổi data trên bảng
+     * Author: LinhPV (12/07/22)
+     * @param {object} filter 
+     */
     changeData(filter) {
       // Dispatch
-      store.dispatch("setFilterInfo", filter);
-      store.dispatch("getEmployees");
+      this.setFilterInfo(filter);
+      this.getEmployees()
     },
   },
   beforeUpdate() {

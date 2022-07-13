@@ -37,12 +37,13 @@
     <employee-detail-vue v-if="isShowPopup" />
     <!-- Dialog -->
     <employee-dialog-vue v-if="isShowDialog" />
+    <!-- Loading -->
+    <m-loading v-if="isLoading" />
   </div>
 </template>
 
 <script>
-import store from "@/store";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
 import EmployeeDialogVue from "./EmployeeDialog.vue";
 import EmployeePaginationVue from "./EmployeePagination.vue";
@@ -61,48 +62,57 @@ export default {
     filter: (state) => state.employee.filter,
     isShowPopup: (state) => state.app.isShowPopup,
     isShowDialog: (state) => state.app.isShowDialog,
+    isLoading: (state) => state.app.isLoading,
   }),
   created() {
+    this.loadData();
     this.getEmployees();
   },
   methods: {
+    /**
+     * Map actions trong vuex
+     * Author: LinhPV (13/07/22)
+     */
+    ...mapActions([
+      // Employee actions
+      "getEmployees",
+      "setFilterInfo",
+      "selectEmp",
+      // App actions
+      "loadData",
+      "setContentHeaderTop",
+      "togglePopup",
+    ]),
     /**
      * Hàm cập nhật content header top
      * Author: LinhPV (12/07/22)
      */
     handleContentScroll() {
       const scrollTop = document.querySelector(".m-content-body").scrollTop;
-      store.dispatch("setContentHeaderTop", scrollTop);
-    },
-    /**
-     * Thay đổi data employees
-     * Author: LinhPV (12/07/22)
-     */
-    getEmployees() {
-      store.dispatch("getEmployees");
+      this.setContentHeaderTop(scrollTop);
     },
     /**
      * Đóng hoặc mở popup thêm nhân viên
      * Author: LinhPV (12/07/22)
      */
     togglePopup() {
-      store.dispatch("togglePopup");
+      this.togglePopup();
     },
     /**
      * Người dùng thêm nhân viên mới
      * Author: LinhPV (12/07/22)
      */
     openPopupAdd() {
-      store.dispatch("selectEmp", {});
+      this.selectEmp({});
       this.togglePopup();
     },
     searchEmployee(e) {
-      store.dispatch("setFilterInfo", {
+      this.setFilterInfo({
         pageSize: this.filter.pageSize,
         pageNumber: 1,
         employeeFilter: e.currentTarget.value,
       });
-      store.dispatch("getEmployees");
+      this.getEmployees();
     },
   },
 };

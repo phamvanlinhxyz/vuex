@@ -3,25 +3,57 @@
   <div class="m-content-header" :style="{ top: `${-contentHeaderTop}px` }">
     <div class="m-header-di">
       <div class="m-header-title">Nhân viên</div>
-      <button class="m-button m-button-add-emp" @click="openPopupAdd">
-        <div class="m-button-text">Thêm mới nhân viên</div>
-      </button>
+      <div class="m-button-group">
+        <button
+          class="
+            m-button m-button-radius m-dropdown-secondary m-button-secondary m-flex m-align-center m-mr-12
+          "
+        >
+          <div class="m-button-text m-pr-4">Tiện ích</div>
+          <div class="m-icon-16 m-icon-arrow-up-black"></div>
+        </button>
+        <button class="m-button m-button-add-emp" @click="openPopupAdd">
+          <div class="m-button-text">Thêm</div>
+        </button>
+        <button class="m-button m-button-dropdown">
+          <div class="m-button-text m-flex m-justify-center">
+            <div class="m-line"></div>
+            <div class="m-icon-16 m-icon-arrow-up-white"></div>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
   <!-- Employee page content -->
   <div class="m-content-body" @scroll="handleContentScroll">
     <!-- Body toolbar -->
     <div class="m-body-toolbar">
-      <div class="m-search-area">
-        <input
-          type="text"
-          class="m-input m-input-icon m-input-search m-search-emp"
-          placeholder="Tìm theo mã, tên nhân viên"
-          @keyup="searchEmployee"
-        />
-        <div class="m-icon-after m-icon-16 m-icon-search"></div>
+      <div class="m-toolbar-left">
+        <button
+          class="
+            m-button m-button-radius m-dropdown-secondary m-button-secondary m-flex m-align-center
+          "
+        >
+          <div class="m-button-text m-pr-4">Thực hiện hàng loạt</div>
+          <div class="m-icon-16 m-icon-arrow-up-black"></div>
+        </button>
       </div>
-      <div class="m-refresh-button m-icon-24 m-icon-refresh"></div>
+      <div class="m-toolbar-right">
+        <div class="m-search-area">
+          <input
+            type="text"
+            class="m-input m-input-icon m-input-search m-search-emp"
+            placeholder="Tìm theo mã, tên nhân viên"
+            @keyup="searchEmployee"
+          />
+          <div class="m-icon-after m-icon-16 m-icon-search"></div>
+        </div>
+        <div
+          class="m-refresh-button m-icon-24 m-icon-refresh"
+          @click="reloadData"
+        ></div>
+        <div class="m-refresh-button m-icon-24 m-icon-excel"></div>
+      </div>
     </div>
     <!-- Body table -->
     <div class="m-body-table">
@@ -96,6 +128,18 @@ export default {
       "setContentHeaderTop",
       "togglePopup",
     ]),
+    /**
+     * Load lại dữ liệu trên bảng
+     * Author: LinhPV (14/07/22)
+     */
+    reloadData() {
+      this.setFilterInfo({
+        pageSize: this.filter.pageSize,
+        pageNumber: 1,
+        employeeFilter: "",
+      });
+      this.getEmployees();
+    },
     /**
      * Hàm cập nhật content header top
      * Author: LinhPV (12/07/22)

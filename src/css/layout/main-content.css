@@ -44,10 +44,15 @@
     padding: 16px;
     position: sticky;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     background-color: #fff;
     left: 0;
+}
+
+.m-toolbar-right {
+    display: flex;
+    align-items: center;
 }
 
 .m-refresh-button {

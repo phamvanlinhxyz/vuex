@@ -90,3 +90,8 @@
     display: block;
     color: rgba(0, 0, 0, .7);
 }
+
+.m-dropdown-secondary {
+  border: 2px solid #3b3c3f;
+  padding: 0 16px!important;
+}

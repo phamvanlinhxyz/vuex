@@ -35,7 +35,7 @@
               <div
                 class="m-icon-24 m-icon-close m-close-add-popup"
                 title="Đóng (ESC)"
-                @click="togglePopup"
+                @click="closePopup"
               ></div>
             </div>
           </div>
@@ -88,7 +88,7 @@
                         <div class="m-input-title">Đơn vị</div>
                         <div class="m-input-title-require">&nbsp;*</div>
                       </div>
-                      <div class="m-combo-box">
+                      <div class="m-combo-box m-combo-department">
                         <div class="m-combo-main-content" ref="comboDepartment">
                           <div class="m-selected-options">
                             <input
@@ -116,7 +116,7 @@
                               class="m-btn-dropdown"
                               @click="
                                 addGreenBorder();
-                                toggleDropdown($event);
+                                toggleDropdown();
                               "
                               ref="buttonDropdown"
                             >
@@ -146,12 +146,12 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Ngày sinh</div>
                       </div>
-
                       <input
                         type="date"
                         class="m-input"
                         ref="dateDateOfBirth"
                         :value="formatDateValue(employee.DateOfBirth)"
+                        @change="selectDate('DateOfBirth', $event)"
                       />
                     </div>
                     <div class="m-input-60 m-pb-12">
@@ -228,6 +228,7 @@
                         class="m-input"
                         ref="dateIdentityDate"
                         :value="formatDateValue(employee.IdentityDate)"
+                        @change="selectDate('IdentityDate', $event)"
                       />
                     </div>
                     <div class="m-input-100 m-pb-12">
@@ -370,7 +371,7 @@
                       m-button-size-default
                       m-button-border-false
                     "
-                    @click="togglePopup"
+                    @click="closePopup"
                   >
                     <div class="m-button-text">Hủy</div>
                   </button>
@@ -404,13 +405,16 @@
               </div>
             </div>
           </div>
-          <!-- Loading -->
-          <MLoading v-if="isShowLoading" />
         </div>
       </div>
     </div>
   </div>
   <!-- Combo dropdown chọn phòng ban -->
+  <div
+    v-if="isShowDropdown"
+    class="m-close-dropdown"
+    @click="handleClose"
+  ></div>
   <div
     v-if="isShowDropdown"
     class="m-combo-menu m-open"
@@ -462,32 +466,359 @@ import moment from "moment";
 
 export default {
   name: "EmployeeDetail",
-  components: {},
   data() {
     return {
-      employee: {},
+      dropdownTop: 0,
+      dropdownLeft: 0,
+      isShowDropdown: false,
       validError: {},
+      focus: null,
     };
   },
+  props: ["isStore"],
+  emits: ["isStoreDone"],
   computed: mapState({
     singleEmployee: (state) => state.employee.singleEmployee,
+    editMode: (state) => state.employee.editMode,
+    employee: (state) => state.employee.employee,
+    departments: (state) => state.department.departments,
+    isShowDialog: (state) => state.app.isShowDialog,
   }),
-  created() {
-    this.employee = this.singleEmployee;
-    console.log(this.singleEmployee);
-  },
   methods: {
     /**
      * Map Actions
      * Author: LinhPV (13/07/22)
      */
-    ...mapActions(["togglePopup"]),
+    ...mapActions([
+      "togglePopup",
+      "setNewEmployeeCode",
+      "getDepartments",
+      "setDialog",
+      "toggleDialog",
+      "addEmployee",
+    ]),
+    handleClose() {
+      let comboElm = this.$refs.comboDepartment;
+      comboElm.classList.remove("m-input-focus");
+      this.isShowDropdown = false;
+    },
     /**
-     * Đong hoặc mở popup
-     * Author: LinhPV (12/07/22)
+     * Xử lý thêm nhân viên
      */
-    togglePopup() {
-      this.togglePopup();
+    handleStoreEmployee() {
+      const isValid = this.validationData();
+      if (isValid) {
+        // Xử lý giới tính
+        this.employee.Gender = document.querySelector(
+          'input[name="Gender"]:checked'
+        ).value;
+        this.addEmployee();
+      }
+    },
+    /**
+     * Validate dữ liệu người dùng
+     * Author: LinhPV (14/07/22)
+     */
+    validationData() {
+      let dataEmployee = this.employee;
+      let dialog;
+      // 1. Kiểm tra các input bắt buộc
+      if (!dataEmployee.EmployeeCode) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Mã không được bỏ trống.",
+          };
+          this.focus = this.$refs.txtEmployeeCode;
+        }
+        this.$refs.txtEmployeeCode.classList.add("m-input-error");
+      }
+      if (!dataEmployee.EmployeeName) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Tên không được bỏ trống.",
+          };
+          this.focus = this.$refs.txtEmployeeName;
+        }
+        this.$refs.txtEmployeeName.classList.add("m-input-error");
+      }
+      if (!dataEmployee.DepartmentName) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Đơn vị không được bỏ trống.",
+          };
+          this.focus = this.$refs.txtDepartmentName;
+        }
+        this.$refs.comboDepartment.classList.add("m-input-error");
+      }
+      // 2. Kiểm tra định dạng ngày tháng
+      let dob = this.$refs.dateDateOfBirth.value;
+      if (dob && (!moment(dob).isValid() || new Date(dob) - new Date() > 0)) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Ngày sinh không hợp lệ.",
+          };
+          this.focus = this.$refs.dateDateOfBirth;
+        }
+      }
+      let idDate = this.$refs.dateIdentityDate.value;
+      if (
+        idDate &&
+        (!moment(idDate).isValid() || new Date(idDate) - new Date() > 0)
+      ) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Ngày cấp không hợp lệ.",
+          };
+          this.focus = this.$refs.dateIdentityDate;
+        }
+      }
+      // 3. Kiểm tra định dạng email
+      let empEmail = this.employee.Email;
+      var regex =
+        /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+)((\.[a-zA-Z0-9-]{2,3})+)$/;
+      if (empEmail && !empEmail.match(regex)) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Email không hợp lệ.",
+          };
+          this.focus = this.$refs.txtEmail;
+        }
+        this.$refs.txtEmail.classList.add("m-input-error");
+      }
+      // 4. Kiểm tra định dạng các input dạng số
+      let idNumber = this.employee.IdentityNumber;
+      if (idNumber && isNaN(idNumber)) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Số CMND không hợp lệ.",
+          };
+          this.focus = this.$refs.txtIdentityNumber;
+        }
+        this.$refs.txtIdentityNumber.classList.add("m-input-error");
+      }
+      let tlphoneNumber = this.employee.TelephoneNumber;
+      if (tlphoneNumber && isNaN(tlphoneNumber)) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "ĐT di động không hợp lệ.",
+          };
+          this.focus = this.$refs.txtTelephoneNumber;
+        }
+        this.$refs.txtTelephoneNumber.classList.add("m-input-error");
+      }
+      let phoneNumber = this.employee.PhoneNumber;
+      if (phoneNumber && isNaN(phoneNumber)) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "ĐT cố định không hợp lệ.",
+          };
+          this.focus = this.$refs.txtPhoneNumber;
+        }
+        this.$refs.txtPhoneNumber.classList.add("m-input-error");
+      }
+      let bankNumber = this.employee.BankAccountNumber;
+      if (bankNumber && isNaN(bankNumber)) {
+        if (!dialog) {
+          dialog = {
+            type: "danger",
+            message: "Tài khoản ngân hàng không hợp lệ.",
+          };
+          this.focus = this.$refs.txtBankAccountNumber;
+        }
+        this.$refs.txtBankAccountNumber.classList.add("m-input-error");
+      }
+      // Return
+      if (dialog) {
+        this.setDialog(dialog);
+        this.toggleDialog();
+        return false;
+      }
+      return true;
+    },
+    /**
+     * Check các input dạng số
+     * Author: LinhPV (14/07/22)
+     */
+    checkInputNumber(ref, e) {
+      if (!e.currentTarget.value || isNaN(e.currentTarget.value)) {
+        e.currentTarget.classList.add("m-input-error");
+        this.validError[ref] = true;
+      } else {
+        e.currentTarget.classList.remove("m-input-error");
+        this.validError[ref] = false;
+      }
+    },
+    /**
+     * Check email người dùng nhập vào
+     * Author: LinhPV (14/07/22)
+     */
+    checkEmail(e) {
+      var regex =
+        /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+)((\.[a-zA-Z0-9-]{2,3})+)$/;
+      if (!e.currentTarget.value.match(regex)) {
+        e.currentTarget.classList.add("m-input-error");
+        this.validError.txtEmail = true;
+      } else {
+        e.currentTarget.classList.remove("m-input-error");
+        this.validError.txtEmail = false;
+      }
+    },
+    /**
+     * Người dùng nhập các input dạng ngày tháng
+     * Author: LinhPV (14/07/22)
+     * @param {string} path
+     * @param {event} e
+     */
+    selectDate(path, e) {
+      var val = e.currentTarget.value;
+      if (moment(val).isValid() && new Date(val) - new Date() < 0) {
+        this.employee[path] = val;
+        e.currentTarget.classList.remove("m-input-error");
+      } else {
+        e.currentTarget.classList.add("m-input-error");
+      }
+    },
+    /**
+     * Check các input bắt buộc khi nhập vào
+     * Author: LinhPV(14/07/22)
+     */
+    checkInputRequire(ref, e) {
+      if (e.currentTarget.value == "") {
+        e.currentTarget.classList.add("m-input-error");
+        this.validError[ref] = true;
+      } else {
+        e.currentTarget.classList.remove("m-input-error");
+        this.validError[ref] = false;
+      }
+    },
+    /**
+     * Check department name khi người dùng nhập vào
+     * Author: LinhPV (14/07/22)
+     */
+    checkDepName(ref, e) {
+      // Gán vị trí dropdown chọn đơn vị
+      let rect = this.$refs.buttonDropdown.getBoundingClientRect();
+      this.dropdownTop = rect.top + 33;
+      this.dropdownLeft = rect.left - 359;
+      this.isShowDropdown = true;
+      let comboElm = this.$refs.comboDepartment;
+      // Lọc đơn vị
+      let depName = e.currentTarget.value;
+      let findDep = this.departments.find((dep) => {
+        return dep.DepartmentName === depName;
+      });
+      if (!findDep) {
+        // Không có đơn vị thỏa mãn
+        comboElm.classList.add("m-input-error");
+        this.validError[ref] = true;
+      } else {
+        // Gán đơn vị hợp lệ
+        this.employee.DepartmentName = findDep.DepartmentName;
+        this.employee.DepartmentId = findDep.DepartmentId;
+        comboElm.classList.remove("m-input-error");
+        this.validError[ref] = false;
+      }
+    },
+    /**
+     * Bỏ border xanh khi người dùng blur khỏi input
+     * Author: LinhPV (14/07/22)
+     */
+    removeGreenBorder() {
+      let comboElm = this.$refs.comboDepartment;
+      comboElm.classList.remove("m-input-focus");
+    },
+    /**
+     * Người dùng chọn đơn vị
+     * Author: LinhPV (14/07/22)
+     * @param {object} dep
+     */
+    selectDepartment(dep) {
+      this.employee.DepartmentName = dep.DepartmentName;
+      this.employee.DepartmentId = dep.DepartmentId;
+      this.isShowDropdown = false;
+      let comboElm = this.$refs.comboDepartment;
+      comboElm.classList.remove("m-input-error");
+      this.validError["txtDepartmentName"] = false;
+      this.$refs.txtDepartmentName.focus();
+    },
+    /**
+     * Hiển thị border xanh khi người dùng chọn đơn vị
+     * Author: LinhPV (14/07/22)
+     */
+    addGreenBorder() {
+      let comboElm = this.$refs.comboDepartment;
+      comboElm.classList.add("m-input-focus");
+    },
+    /**
+     * Người dùng mở dropdown chọn đơn vị
+     * Author: LinhPV (14/07/22)
+     */
+    toggleDropdown() {
+      if (!this.isShowDropdown) {
+        // Gán vị trí dropdown chọn đơn vị
+        let rect = this.$refs.buttonDropdown.getBoundingClientRect();
+        this.dropdownTop = rect.top + 33;
+        this.dropdownLeft = rect.left - 359;
+      }
+      this.isShowDropdown = !this.isShowDropdown;
+    },
+    /**
+     * So sánh 2 object
+     * Author: LinhPV (14/07/22)
+     */
+    objectEqual(object1, object2) {
+      const keys1 = Object.keys(object1);
+      const keys2 = Object.keys(object2);
+
+      // Check số lượng key của 2 object
+      if (keys1.length !== keys2.length) {
+        return false;
+      }
+
+      // Check lần lượt các value
+      for (const key of keys1) {
+        const val1 = object1[key];
+        const val2 = object2[key];
+        const areObjects = this.isObject(val1) && this.isObject(val2);
+
+        if (
+          (areObjects && !this.objectEqual(val1, val2)) ||
+          (!areObjects && val1 !== val2)
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+    isObject(object) {
+      return object != null && typeof object === "object";
+    },
+    /**
+     * Check thông tin thay đổi và đóng popup
+     * Author: LinhPV (14/07/22)
+     */
+    closePopup() {
+      // Check dữ liệu trên popup đã thay đổi
+      if (!this.objectEqual(this.employee, this.singleEmployee)) {
+        this.setDialog({
+          type: "question",
+          message: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
+          action: 1,
+        });
+        this.toggleDialog();
+      } else {
+        this.togglePopup();
+      }
     },
     /**
      * Format date value cho input
@@ -497,6 +828,41 @@ export default {
     formatDateValue(date) {
       return date ? moment(date).format("YYYY-MM-DD") : null;
     },
+  },
+  watch: {
+    isShowDialog(newState) {
+      if (newState == false && this.focus) {
+        this.focus.focus();
+      }
+    },
+    isStore(newState) {
+      if (newState == true) {
+        this.$refs.btnStore.click();
+        this.$emit("isStoreDone");
+      }
+    },
+  },
+  created() {
+    // Check mode
+    if (this.editMode === 1) {
+      // Gọi API lấy mã mới
+      this.setNewEmployeeCode();
+    }
+    // Gọi API lấy department
+    this.getDepartments();
+  },
+  mounted() {
+    // Focus mã nhân viên
+    this.$refs.txtEmployeeCode.focus();
+    // Xử lý giới tính
+    let genderInput = document.querySelector(
+      `input[name="Gender"][value="${this.employee.Gender}"]`
+    );
+    if (genderInput) {
+      genderInput.checked = true;
+    } else {
+      document.querySelector('input[name="Gender"][value="1"]').checked = true;
+    }
   },
 };
 </script>

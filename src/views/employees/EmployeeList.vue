@@ -34,9 +34,16 @@
       />
     </div>
     <!-- Popup thêm nhân viên -->
-    <employee-detail-vue v-if="isShowPopup" />
+    <employee-detail-vue
+      v-if="isShowPopup"
+      :isStore="isStore"
+      @isStoreDone="() => (this.isStore = false)"
+    />
     <!-- Dialog -->
-    <employee-dialog-vue v-if="isShowDialog" />
+    <employee-dialog-vue
+      v-if="isShowDialog"
+      @setIsStore="() => (this.isStore = true)"
+    />
     <!-- Loading -->
     <m-loading v-if="isLoading" />
   </div>
@@ -64,6 +71,11 @@ export default {
     isShowDialog: (state) => state.app.isShowDialog,
     isLoading: (state) => state.app.isLoading,
   }),
+  data() {
+    return {
+      isStore: false,
+    };
+  },
   created() {
     this.loadData();
     this.getEmployees();
@@ -78,6 +90,7 @@ export default {
       "getEmployees",
       "setFilterInfo",
       "selectEmp",
+      "changeEditMode",
       // App actions
       "loadData",
       "setContentHeaderTop",
@@ -92,18 +105,12 @@ export default {
       this.setContentHeaderTop(scrollTop);
     },
     /**
-     * Đóng hoặc mở popup thêm nhân viên
-     * Author: LinhPV (12/07/22)
-     */
-    togglePopup() {
-      this.togglePopup();
-    },
-    /**
      * Người dùng thêm nhân viên mới
      * Author: LinhPV (12/07/22)
      */
     openPopupAdd() {
       this.selectEmp({});
+      this.changeEditMode(1);
       this.togglePopup();
     },
     searchEmployee(e) {

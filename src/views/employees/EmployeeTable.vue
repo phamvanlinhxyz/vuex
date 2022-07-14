@@ -205,7 +205,9 @@
         </td>
         <td class="m-td m-td-emp-code">{{ emp.EmployeeCode }}</td>
         <td class="m-td">{{ emp.EmployeeName }}</td>
-        <td class="m-td">{{ emp.GenderName }}</td>
+        <td class="m-td">
+          {{ emp.GenderName ? emp.GenderName : formatGender(emp.Gender) }}
+        </td>
         <td class="m-td">{{ formatDate(emp.DateOfBirth) }}</td>
         <td class="m-td">{{ emp.EmployeePosition }}</td>
         <td class="m-td">{{ emp.IdentityNumber }}</td>
@@ -405,12 +407,28 @@ export default {
       "setDialog",
       "toggleDialog",
       "changeWidthTable",
+      "changeEditMode",
     ]),
+    /**
+     * Format lại giới tính
+     * Author: LinhPV (14/07/22)
+     * @param {number} gender 
+     */
+    formatGender(gender) {
+      if (gender === 1) {
+        return "Nam";
+      } else if (gender === 0) {
+        return " Nữ";
+      } else {
+        return "Không xác định";
+      }
+    },
     /**
      * Người dùng chọn sửa nhân viên
      * Author: LinhPV (12/07/22)
      */
     editEmployee(emp) {
+      this.changeEditMode(2);
       this.selectEmp(emp);
       this.togglePopup();
     },

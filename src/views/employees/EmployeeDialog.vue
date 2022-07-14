@@ -67,6 +67,7 @@
                     m-button-size-default
                     m-button-border-false
                   "
+                  @click="closeDialog"
                 >
                   <div class="m-button-text">Hủy</div>
                 </button>
@@ -80,7 +81,7 @@
                     m-button-size-default
                     m-button-border-false
                   "
-                  @click="closeDialog"
+                  @click="closeAll"
                 >
                   <div class="m-button-text">Không</div>
                 </button>
@@ -92,7 +93,7 @@
                     m-button-border-false
                     m-ml-8
                   "
-                  @click="() => this.$emit('store_emp')"
+                  @click="confirmClick"
                 >
                   <div class="m-button-text">Cất</div>
                 </button>
@@ -119,12 +120,26 @@ export default {
     dialog: (state) => state.app.dialog,
     singleEmployee: (state) => state.employee.singleEmployee,
   }),
+  emits: ["setIsStore"],
   methods: {
     /**
      * Map action
      * Author: LinhPV (13/07/22)
      */
-    ...mapActions(["toggleDialog", "deleteEmployee"]),
+    ...mapActions([
+      "toggleDialog",
+      "deleteEmployee",
+      "togglePopup",
+      "addEmployee",
+    ]),
+    /**
+     * Đóng cả dialog và popup
+     * Author: LinhPV (14/07/22)
+     */
+    closeAll() {
+      this.toggleDialog();
+      this.togglePopup();
+    },
     /**
      * Đóng dialog
      * Author: LinhPV (13/07/22)
@@ -138,12 +153,18 @@ export default {
      */
     confirmClick() {
       switch (this.dialog.action) {
+        // Store
+        case 1:
+          this.toggleDialog();
+          this.$emit("setIsStore");
+          break;
         // Delete
         case 3:
           // Đóng dialog
           this.toggleDialog();
           // Xóa nhân viên
           this.deleteEmployee(this.singleEmployee.EmployeeId);
+          break;
       }
     },
   },

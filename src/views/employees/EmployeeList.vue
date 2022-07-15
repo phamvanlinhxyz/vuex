@@ -76,8 +76,7 @@
       v-if="isShowDialog"
       @setIsStore="() => (this.isStore = true)"
     />
-    <!-- Loading -->
-    <m-loading v-if="isLoading" />
+
   </div>
 </template>
 
@@ -101,7 +100,6 @@ export default {
     filter: (state) => state.employee.filter,
     isShowPopup: (state) => state.app.isShowPopup,
     isShowDialog: (state) => state.app.isShowDialog,
-    isLoading: (state) => state.app.isLoading,
   }),
   data() {
     return {

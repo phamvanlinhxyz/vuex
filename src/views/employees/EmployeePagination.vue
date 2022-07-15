@@ -184,10 +184,32 @@ export default {
      * Map actions
      */
     ...mapActions(["setFilterInfo", "getEmployees"]),
+    selectPrevPage() {
+      const currentPage = parseInt(this.filter.pageNumber);
+
+      if (currentPage > 1) {
+        this.changeData({
+          pageSize: this.filter.pageSize,
+          pageNumber: currentPage - 1,
+          employeeFilter: this.filter.employeeFilter,
+        });
+      }
+    },
+    selectNextPage() {
+      const currentPage = parseInt(this.filter.pageNumber);
+
+      if (currentPage < this.totalPage) {
+        this.changeData({
+          pageSize: this.filter.pageSize,
+          pageNumber: currentPage + 1,
+          employeeFilter: this.filter.employeeFilter,
+        });
+      }
+    },
     /**
      * Chọn số bản ghi trên 1 trang
      * Author: LinhPV (12/07/22)
-     * @param {event} e 
+     * @param {event} e
      */
     selectTotalRecord(e) {
       // Gán value cho input
@@ -205,7 +227,7 @@ export default {
     /**
      * Mở combobox chọn số bản ghi
      * Author: LinhPV (12/07/22)
-     * @param {event} e 
+     * @param {event} e
      */
     openSelectTotalRecordPanel(e) {
       if (!this.isShowRecordDropdown) {
@@ -218,7 +240,7 @@ export default {
     /**
      * Chọn số page
      * Author: LinhPV (12/07/22)
-     * @param {event} e 
+     * @param {event} e
      */
     selectNumberPage(e) {
       // Lấy số trang
@@ -232,12 +254,12 @@ export default {
     /**
      * Thay đổi data trên bảng
      * Author: LinhPV (12/07/22)
-     * @param {object} filter 
+     * @param {object} filter
      */
     changeData(filter) {
       // Dispatch
       this.setFilterInfo(filter);
-      this.getEmployees()
+      this.getEmployees();
     },
   },
   beforeUpdate() {

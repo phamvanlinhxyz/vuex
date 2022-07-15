@@ -364,7 +364,7 @@
     :style="{ top: `${dropdownTop}px`, left: `${dropdownLeft}px` }"
   >
     <ul class="m-dropdown-menu-items">
-      <li class="m-dropdown-item">
+      <li class="m-dropdown-item" @click="replicationEmp">
         <a class="m-dropdown-item-link">Nhân bản</a>
       </li>
       <li class="m-dropdown-item m-item-delete" @click="deleteEmp">
@@ -380,6 +380,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import moment from "moment";
+import { formMode } from "@/config";
 
 export default {
   name: "EmployeeTable",
@@ -410,9 +411,18 @@ export default {
       "changeEditMode",
     ]),
     /**
+     * Nhân bản nhân viên
+     * Author: LinhPV (15/07/22)
+     */
+    replicationEmp() {
+      this.changeEditMode(formMode.STORE);
+      this.isShowDropdown = false;
+      this.togglePopup();
+    },
+    /**
      * Format lại giới tính
      * Author: LinhPV (14/07/22)
-     * @param {number} gender 
+     * @param {number} gender
      */
     formatGender(gender) {
       if (gender === 1) {
@@ -428,7 +438,7 @@ export default {
      * Author: LinhPV (12/07/22)
      */
     editEmployee(emp) {
-      this.changeEditMode(2);
+      this.changeEditMode(formMode.EDIT);
       this.selectEmp(emp);
       this.togglePopup();
     },

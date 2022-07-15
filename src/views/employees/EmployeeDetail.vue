@@ -463,6 +463,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import moment from "moment";
+import { formMode } from "@/config";
 
 export default {
   name: "EmployeeDetail",
@@ -496,7 +497,19 @@ export default {
       "setDialog",
       "toggleDialog",
       "addEmployee",
+      "editEmployee",
+      "changeEditMode",
     ]),
+    handleStoreAndAdd() {
+      var mode =
+        this.editMode === formMode.STORE
+          ? formMode.STORE_AND_ADD
+          : this.editMode === formMode.EDIT
+          ? formMode.EDIt_AND_ADD
+          : null;
+      this.changeEditMode(mode);
+      this.handleStoreEmployee();
+    },
     handleClose() {
       let comboElm = this.$refs.comboDepartment;
       comboElm.classList.remove("m-input-focus");
@@ -512,7 +525,19 @@ export default {
         this.employee.Gender = document.querySelector(
           'input[name="Gender"]:checked'
         ).value;
-        this.addEmployee();
+        // Nếu editMode = 1, 3 => Thêm
+        if (
+          this.editMode === formMode.STORE ||
+          this.editMode === formMode.STORE_AND_ADD
+        ) {
+          this.addEmployee();
+          // Nếu editMode = 2, 4 => Sửa
+        } else if (
+          this.editMode === formMode.EDIT ||
+          this.editMode === formMode.EDIt_AND_ADD
+        ) {
+          this.editEmployee();
+        }
       }
     },
     /**
@@ -844,7 +869,7 @@ export default {
   },
   created() {
     // Check mode
-    if (this.editMode === 1) {
+    if (this.editMode === formMode.STORE) {
       // Gọi API lấy mã mới
       this.setNewEmployeeCode();
     }

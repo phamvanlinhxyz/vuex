@@ -42,6 +42,7 @@ body {
   font-family: Noto-Sans-Regular;
   font-size: 13px;
   overflow: hidden;
+  position: relative;
 }
 
 * {

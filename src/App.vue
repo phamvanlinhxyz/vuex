@@ -6,9 +6,12 @@
       <the-content-vue />
     </div>
   </div>
+  <!-- Loading -->
+  <m-loading v-if="isLoading" />
 </template>
 
 <script>
+import { mapState } from "vuex";
 import TheContentVue from "./components/layouts/TheContent.vue";
 import TheMenuVue from "./components/layouts/TheMenu.vue";
 import TheNavbarVue from "./components/layouts/TheNavbar.vue";
@@ -20,6 +23,9 @@ export default {
     TheMenuVue,
     TheNavbarVue,
   },
+  computed: mapState({
+    isLoading: (state) => state.app.isLoading,
+  }),
 };
 </script>
 

@@ -1,4 +1,4 @@
-import { constants } from "@/config";
+import { constants, formMode } from "@/config";
 import axios from "axios";
 
 const state = {
@@ -134,7 +134,59 @@ const actions = {
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
-      context.dispatch("togglePopup");
+
+      // Check mode
+      if (state.editMode === formMode.STORE) {
+        // Cất
+        context.dispatch("togglePopup");
+      } else {
+        // Cất và thêm
+        context.dispatch("changeEditMode", formMode.STORE);
+        context.dispatch("selectEmp", {});
+        context.dispatch("setNewEmployeeCode");
+      }
+
+      // Dispatch load data
+      context.dispatch("getEmployees");
+    } catch (error) {
+      // Dispatch thông báo có lỗi
+      context.dispatch("setDialog", {
+        type: "danger",
+        message: error.response.data.userMsg,
+        action: 0,
+      });
+      context.dispatch("toggleLoading");
+      context.dispatch("toggleDialog");
+    }
+  },
+  async editEmployee(context) {
+    // Dispatch loading
+    context.dispatch("toggleLoading");
+    try {
+      await axios.put(
+        `${constants.API_URL}/Employees/${state.employee.EmployeeId}`,
+        state.employee
+      );
+
+      // Dispatch thông báo thành công
+      context.dispatch("setDialog", {
+        type: "success",
+        message: "Sửa nhân viên thành công.",
+        action: 0,
+      });
+      context.dispatch("toggleLoading");
+      context.dispatch("toggleDialog");
+
+      // Check mode
+      if (state.editMode === formMode.EDIT) {
+        // Cất
+        context.dispatch("togglePopup");
+      } else {
+        // Cất và thêm
+        context.dispatch("changeEditMode", formMode.STORE);
+        context.dispatch("selectEmp", {});
+        context.dispatch("setNewEmployeeCode");
+      }
 
       // Dispatch load data
       context.dispatch("getEmployees");

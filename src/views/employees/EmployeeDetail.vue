@@ -2,7 +2,7 @@
   <div class="m-popup m-add-popup m-dialog">
     <div class="m-popup-con">
       <div class="m-popup-background"></div>
-      <div class="m-popup-drag">
+      <div class="m-popup-drag" ref="dragElm" @mousedown="dragMouseDown">
         <div class="m-popup m-popup-content">
           <!-- Popup header -->
           <div class="m-popup--header">
@@ -474,6 +474,12 @@ export default {
       isShowDropdown: false,
       validError: {},
       focus: null,
+      positions: {
+        clientX: undefined,
+        clientY: undefined,
+        movementX: 0,
+        movementY: 0,
+      },
     };
   },
   props: ["isStore"],
@@ -500,6 +506,42 @@ export default {
       "editEmployee",
       "changeEditMode",
     ]),
+    dragMouseDown(e) {
+      this.positions.clientX = e.clientX;
+      this.positions.clientY = e.clientY;
+      document.onmousemove = this.handleDrag;
+      document.onmouseup = this.closeDrag;
+    },
+    handleDrag(e) {
+      this.positions.movementX = this.positions.clientX - e.clientX;
+      this.positions.movementY = this.positions.clientY - e.clientY;
+      this.positions.clientX = e.clientX;
+      this.positions.clientY = e.clientY;
+      // set the element's new position:
+      let elm = this.$refs.dragElm;
+      let top = elm.offsetTop - this.positions.movementY;
+      let left = elm.offsetLeft - this.positions.movementX;
+      elm.style.top =
+        top < 0
+          ? 0
+          : top > window.innerHeight - elm.offsetHeight
+          ? window.innerHeight - elm.offsetHeight + "px"
+          : top + "px";
+      elm.style.left =
+        left < 0
+          ? 0
+          : left > window.innerWidth - elm.offsetWidth
+          ? window.innerWidth - elm.offsetWidth + "px"
+          : left + "px";
+    },
+    closeDrag() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    },
+    /**
+     * Xử lý cất và thêm
+     * Author: LinhPV (15/07/22)
+     */
     handleStoreAndAdd() {
       var mode =
         this.editMode === formMode.STORE

@@ -6,7 +6,13 @@
       <div class="m-button-group">
         <button
           class="
-            m-button m-button-radius m-dropdown-secondary m-button-secondary m-flex m-align-center m-mr-12
+            m-button
+            m-button-radius
+            m-dropdown-secondary
+            m-button-secondary
+            m-flex
+            m-align-center
+            m-mr-12
           "
         >
           <div class="m-button-text m-pr-4">Tiện ích</div>
@@ -31,7 +37,12 @@
       <div class="m-toolbar-left">
         <button
           class="
-            m-button m-button-radius m-dropdown-secondary m-button-secondary m-flex m-align-center
+            m-button
+            m-button-radius
+            m-dropdown-secondary
+            m-button-secondary
+            m-flex
+            m-align-center
           "
         >
           <div class="m-button-text m-pr-4">Thực hiện hàng loạt</div>
@@ -76,7 +87,6 @@
       v-if="isShowDialog"
       @setIsStore="() => (this.isStore = true)"
     />
-
   </div>
 </template>
 

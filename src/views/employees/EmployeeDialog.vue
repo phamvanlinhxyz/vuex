@@ -3,7 +3,7 @@
     <div class="m-dialog-box">
       <div class="m-dialog-center">
         <div class="m-dialog-background"></div>
-        <div class="m-dialog-drag">
+        <div class="m-dialog-drag" ref="dragElm" @mousedown="dragMouseDown">
           <div class="m-dialog-message">
             <div class="m-dialog-content">
               <div class="m-content-icon">
@@ -114,6 +114,12 @@ export default {
   data() {
     return {
       icon: "",
+      positions: {
+        clientX: undefined,
+        clientY: undefined,
+        movementX: 0,
+        movementY: 0,
+      },
     };
   },
   computed: mapState({
@@ -132,6 +138,38 @@ export default {
       "togglePopup",
       "addEmployee",
     ]),
+    dragMouseDown(e) {
+      this.positions.clientX = e.clientX;
+      this.positions.clientY = e.clientY;
+      document.onmousemove = this.handleDrag;
+      document.onmouseup = this.closeDrag;
+    },
+    handleDrag(e) {
+      this.positions.movementX = this.positions.clientX - e.clientX;
+      this.positions.movementY = this.positions.clientY - e.clientY;
+      this.positions.clientX = e.clientX;
+      this.positions.clientY = e.clientY;
+      // set the element's new position:
+      let elm = this.$refs.dragElm;
+      let top = elm.offsetTop - this.positions.movementY;
+      let left = elm.offsetLeft - this.positions.movementX;
+      elm.style.top =
+        top < 0
+          ? 0
+          : top > window.innerHeight - elm.offsetHeight
+          ? window.innerHeight - elm.offsetHeight + "px"
+          : top + "px";
+      elm.style.left =
+        left < 0
+          ? 0
+          : left > window.innerWidth - elm.offsetWidth
+          ? window.innerWidth - elm.offsetWidth + "px"
+          : left + "px";
+    },
+    closeDrag() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    },
     /**
      * Đóng cả dialog và popup
      * Author: LinhPV (14/07/22)

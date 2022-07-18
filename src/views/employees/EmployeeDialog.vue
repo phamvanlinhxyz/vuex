@@ -108,6 +108,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { dialogAction } from "@/config";
 
 export default {
   name: "EmployeeDialog",
@@ -137,6 +138,7 @@ export default {
       "deleteEmployee",
       "togglePopup",
       "addEmployee",
+      "bulkDeleteEmployee",
     ]),
     dragMouseDown(e) {
       this.positions.clientX = e.clientX;
@@ -192,17 +194,22 @@ export default {
     confirmClick() {
       switch (this.dialog.action) {
         // Store
-        case 1:
+        case dialogAction.CONFIRM_STORE:
           this.toggleDialog();
           this.$emit("setIsStore");
           break;
         // Delete
-        case 3:
+        case dialogAction.CONFIRM_DELETE:
           // Đóng dialog
           this.toggleDialog();
           // Xóa nhân viên
           this.deleteEmployee(this.singleEmployee.EmployeeId);
           break;
+        case dialogAction.CONFIRM_BULK_DELETE:
+          // Đóng dialog
+          this.toggleDialog();
+          // Xóa hàng loạt
+          this.bulkDeleteEmployee();
       }
     },
   },

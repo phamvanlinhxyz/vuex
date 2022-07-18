@@ -463,7 +463,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import moment from "moment";
-import { formMode } from "@/config";
+import { dialogAction, formMode } from "@/config";
 
 export default {
   name: "EmployeeDetail",
@@ -880,7 +880,7 @@ export default {
         this.setDialog({
           type: "question",
           message: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
-          action: 1,
+          action: dialogAction.CONFIRM_STORE,
         });
         this.toggleDialog();
       } else {

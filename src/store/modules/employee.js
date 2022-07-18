@@ -1,10 +1,11 @@
-import { constants, formMode } from "@/config";
+import { constants, dialogAction, formMode } from "@/config";
 import axios from "axios";
 
 const state = {
   isLoadData: true,
   isChangeData: false,
   employees: [],
+  selectedEmployees: [],
   totalEmployee: 0,
   totalPage: 0,
   widthTable: 0,
@@ -55,6 +56,9 @@ const mutations = {
     state.singleEmployee.EmployeeCode = payload;
     state.employee.EmployeeCode = payload;
   },
+  updateListSelected(state, payload) {
+    state.selectedEmployees = payload;
+  },
 };
 
 const actions = {
@@ -75,6 +79,9 @@ const actions = {
   },
   changeEditMode(context, mode) {
     context.commit("changeEditMode", mode);
+  },
+  updateListSelected(context, list) {
+    context.commit("updateListSelected", list);
   },
   async getEmployees(context) {
     context.commit("changeData");
@@ -101,12 +108,12 @@ const actions = {
       context.dispatch("setDialog", {
         type: "success",
         message: "Xóa nhân viên thành công.",
-        action: 0,
+        action: dialogAction.DEFAULT,
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
     } catch (error) {
-      console.log(error);
+      handleException(error, context);
     }
   },
   async setNewEmployeeCode(context) {
@@ -130,7 +137,7 @@ const actions = {
       context.dispatch("setDialog", {
         type: "success",
         message: "Thêm mới nhân viên thành công.",
-        action: 0,
+        action: dialogAction.DEFAULT,
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
@@ -149,14 +156,7 @@ const actions = {
       // Dispatch load data
       context.dispatch("getEmployees");
     } catch (error) {
-      // Dispatch thông báo có lỗi
-      context.dispatch("setDialog", {
-        type: "danger",
-        message: error.response.data.userMsg,
-        action: 0,
-      });
-      context.dispatch("toggleLoading");
-      context.dispatch("toggleDialog");
+      handleException(error, context);
     }
   },
   async editEmployee(context) {
@@ -172,7 +172,7 @@ const actions = {
       context.dispatch("setDialog", {
         type: "success",
         message: "Sửa nhân viên thành công.",
-        action: 0,
+        action: dialogAction.DEFAULT,
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
@@ -191,16 +191,46 @@ const actions = {
       // Dispatch load data
       context.dispatch("getEmployees");
     } catch (error) {
-      // Dispatch thông báo có lỗi
-      context.dispatch("setDialog", {
-        type: "danger",
-        message: error.response.data.userMsg,
-        action: 0,
-      });
-      context.dispatch("toggleLoading");
-      context.dispatch("toggleDialog");
+      handleException(error, context);
     }
   },
+  async bulkDeleteEmployee(context) {
+    // Dispatch loading
+    context.dispatch("toggleLoading");
+    try {
+      // Gọi API
+      const res = await axios.delete(
+        `${constants.API_URL}/Employees/BulkDelete`,
+        { data: state.selectedEmployees }
+      );
+
+      // Dừng loading
+      context.dispatch("toggleLoading");
+      // Hiển thị dialog thành công
+      context.dispatch("setDialog", {
+        type: "success",
+        message: `Đã xóa thành công ${res.data} bản ghi.`,
+        action: dialogAction.DEFAULT,
+      });
+      context.dispatch("toggleDialog");
+
+      // Load lại danh sách nhân viên
+      context.dispatch("getEmployees");
+    } catch (error) {
+      handleException(error, context);
+    }
+  },
+};
+
+const handleException = (error, context) => {
+  context.dispatch("toggleLoading");
+  // Dispatch thông báo có lỗi
+  context.dispatch("setDialog", {
+    type: "danger",
+    message: error.response.data.userMsg,
+    action: dialogAction.DEFAULT,
+  });
+  context.dispatch("toggleDialog");
 };
 
 export default {

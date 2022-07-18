@@ -1,12 +1,14 @@
+import { dialogAction } from "@/config";
+
 const state = {
   isShowPopup: false,
   isShowDialog: false,
   isLoading: false,
   contentHeaderTop: 0,
   dialog: {
-    type: 'success',
-    message: '',
-    action: 0, // 0: không có action, 1: Thêm, 2: Sửa, 3: Xóa
+    type: "success",
+    message: "",
+    action: dialogAction.DEFAULT,
   },
 };
 
@@ -30,19 +32,19 @@ const mutations = {
 
 const actions = {
   togglePopup(context) {
-    context.commit('togglePopup');
+    context.commit("togglePopup");
   },
   toggleDialog(context) {
-    context.commit('toggleDialog');
+    context.commit("toggleDialog");
   },
   setDialog(context, dialog) {
-    context.commit('setDialog', dialog);
+    context.commit("setDialog", dialog);
   },
   setContentHeaderTop(context, top) {
-    context.commit('setContentHeaderTop', top);
+    context.commit("setContentHeaderTop", top);
   },
   toggleLoading(context) {
-    context.commit('toggleLoading');
+    context.commit("toggleLoading");
   },
 };
 

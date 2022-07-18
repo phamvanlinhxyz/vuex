@@ -5,7 +5,12 @@
         <th class="m-out-left-white-16" style="top: -78px"></th>
         <th class="m-th m-checkall" style="left: 16px; top: -71px; z-index: 3">
           <label class="m-table-checkbox">
-            <input type="checkbox" class="m-input-checkall" />
+            <input
+              type="checkbox"
+              class="m-input-checkall"
+              :checked="checkAll"
+              @change="checkAllRc"
+            />
             <span class="m-checkbox">
               <span class="m-checkbox-inner">
                 <div class="m-icon-16 m-icon-checkbox-active"></div>
@@ -195,7 +200,11 @@
         <td class="m-out-left-white-16"></td>
         <td class="m-td m-td-multi" style="left: 16px">
           <label class="m-table-checkbox">
-            <input type="checkbox" class="m-input-checkbox" />
+            <input
+              type="checkbox"
+              class="m-input-checkbox"
+              @change="checkOneRc(emp.EmployeeId)"
+            />
             <span class="m-checkbox">
               <span class="m-checkbox-inner">
                 <div class="m-icon-16 m-icon-checkbox-active"></div>
@@ -206,7 +215,7 @@
         <td class="m-td m-td-emp-code">{{ emp.EmployeeCode }}</td>
         <td class="m-td">{{ emp.EmployeeName }}</td>
         <td class="m-td">
-          {{ emp.GenderName ? emp.GenderName : formatGender(emp.Gender) }}
+          {{ formatGender(emp.Gender) }}
         </td>
         <td class="m-td">{{ formatDate(emp.DateOfBirth) }}</td>
         <td class="m-td">{{ emp.EmployeePosition }}</td>
@@ -380,7 +389,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import moment from "moment";
-import { formMode } from "@/config";
+import { dialogAction, formMode } from "@/config";
 
 export default {
   name: "EmployeeTable",
@@ -389,6 +398,8 @@ export default {
       isShowDropdown: false,
       dropdownTop: 0,
       dropdownLeft: 0,
+      checkAll: false,
+      checkList: [],
     };
   },
   computed: mapState({
@@ -397,6 +408,7 @@ export default {
     isChangeData: (state) => state.employee.isChangeData,
     singleEmployee: (state) => state.employee.singleEmployee,
   }),
+  emits: ["checkSelectEmp"],
   methods: {
     /**
      * Map action
@@ -409,7 +421,57 @@ export default {
       "toggleDialog",
       "changeWidthTable",
       "changeEditMode",
+      "updateListSelected",
     ]),
+    /**
+     * Check all record
+     * Author: LinhPV (16/07/22)
+     */
+    checkAllRc() {
+      this.checkAll = !this.checkAll;
+      if (!this.checkAll) {
+        var checkBoxs = document.querySelectorAll(".m-input-checkbox");
+        checkBoxs.forEach((checkbox) => {
+          checkbox.checked = false;
+        });
+        this.checkList = [];
+      } else {
+        this.checkList = this.employees.map((emp) => emp.EmployeeId);
+      }
+      // Cập nhật trong store
+      this.updateListSelected(this.checkList);
+    },
+    /**
+     * Check 1 record
+     * Author: LinhPV (16/07/22)
+     */
+    checkOneRc(empId) {
+      // Kiểm tra tất cả check box
+      var checkedBoxs = document.querySelectorAll(
+        ".m-input-checkbox:checked"
+      ).length;
+      if (checkedBoxs === this.employees.length) {
+        this.checkAll = true;
+      } else {
+        this.checkAll = false;
+      }
+      // Kiểm tra check box hiện tại đã ở trong list hay chưa
+      if (this.checkList.includes(empId)) {
+        this.checkList = this.checkList.filter((item) => {
+          return item !== empId;
+        });
+      } else {
+        this.checkList.unshift(empId);
+      }
+      // Cập nhật trong store
+      this.updateListSelected(this.checkList);
+      // Kiểm tra có checkbox nào đang check không
+      if (document.querySelectorAll(".m-input-checkbox:checked").length > 0) {
+        this.$emit("checkSelectEmp", true);
+      } else {
+        this.$emit("checkSelectEmp", false);
+      }
+    },
     /**
      * Nhân bản nhân viên
      * Author: LinhPV (15/07/22)
@@ -474,7 +536,7 @@ export default {
       this.setDialog({
         type: "warning",
         message: `Bạn có thực sự muốn xóa Nhân viên <${this.singleEmployee.EmployeeCode}> không?`,
-        action: 3,
+        action: dialogAction.CONFIRM_DELETE,
       });
       this.toggleDialog();
       // Tắt dropdown
@@ -484,6 +546,24 @@ export default {
   updated() {
     // Cập nhật chiều rộng table
     this.changeWidthTable(document.querySelector(".m-table").offsetWidth);
+
+    // Kiểm tra checkall
+    if (this.checkAll) {
+      var checkBoxs = document.querySelectorAll(".m-input-checkbox");
+      checkBoxs.forEach((checkbox) => {
+        checkbox.checked = true;
+      });
+      this.checkList = this.employees.map((emp) => emp.EmployeeId);
+      // Cập nhật trong store
+      this.updateListSelected(this.checkList);
+    }
+
+    // Kiểm tra có checkbox nào đang check không
+    if (document.querySelectorAll(".m-input-checkbox:checked").length > 0) {
+      this.$emit("checkSelectEmp", true);
+    } else {
+      this.$emit("checkSelectEmp", false);
+    }
   },
 };
 </script>

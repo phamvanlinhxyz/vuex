@@ -1,4 +1,4 @@
-import { constants, dialogAction, formMode } from "@/config";
+import { constants, dialogAction, formMode, gender } from "@/config";
 import axios from "axios";
 
 const state = {
@@ -149,7 +149,7 @@ const actions = {
       } else {
         // Cất và thêm
         context.dispatch("changeEditMode", formMode.STORE);
-        context.dispatch("selectEmp", {});
+        context.dispatch("selectEmp", { Gender: gender.MALE });
         context.dispatch("setNewEmployeeCode");
       }
 
@@ -184,7 +184,7 @@ const actions = {
       } else {
         // Cất và thêm
         context.dispatch("changeEditMode", formMode.STORE);
-        context.dispatch("selectEmp", {});
+        context.dispatch("selectEmp", { Gender: gender.MALE });
         context.dispatch("setNewEmployeeCode");
       }
 

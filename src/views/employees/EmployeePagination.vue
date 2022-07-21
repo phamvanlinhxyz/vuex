@@ -107,6 +107,11 @@
   <!-- Dropdown chọn số bản ghi -->
   <div
     v-if="isShowRecordDropdown"
+    class="m-close-dropdown"
+    @click="() => this.isShowRecordDropdown = false"
+  ></div>
+  <div
+    v-if="isShowRecordDropdown"
     class="m-combo-dropdown-panel m-select-total-record"
     :style="{ top: `${dropdownTop}px`, left: `${dropdownLeft}px` }"
   >
@@ -184,6 +189,10 @@ export default {
      * Map actions
      */
     ...mapActions(["setFilterInfo", "getEmployees"]),
+    /**
+     * Chọn trang trước
+     * Author: LinhPV (12/07/22)
+     */
     selectPrevPage() {
       const currentPage = parseInt(this.filter.pageNumber);
 
@@ -195,6 +204,10 @@ export default {
         });
       }
     },
+     /**
+     * Chọn trang sau
+     * Author: LinhPV (12/07/22)
+     */
     selectNextPage() {
       const currentPage = parseInt(this.filter.pageNumber);
 

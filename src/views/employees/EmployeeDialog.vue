@@ -140,6 +140,11 @@ export default {
       "addEmployee",
       "bulkDeleteEmployee",
     ]),
+    /**
+     * Di chuyển dialog
+     * Author: LinhPV (19/07/22)
+     * @param {event} e 
+     */
     dragMouseDown(e) {
       this.positions.clientX = e.clientX;
       this.positions.clientY = e.clientY;

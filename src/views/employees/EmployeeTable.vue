@@ -215,7 +215,7 @@
         <td class="m-td m-td-emp-code">{{ emp.EmployeeCode }}</td>
         <td class="m-td">{{ emp.EmployeeName }}</td>
         <td class="m-td">
-          {{ formatGender(emp.Gender) }}
+          {{ emp.GenderName }}
         </td>
         <td class="m-td">{{ formatDate(emp.DateOfBirth) }}</td>
         <td class="m-td">{{ emp.EmployeePosition }}</td>
@@ -367,6 +367,11 @@
     <div class="m-out-right-grey-30"></div>
   </div>
   <!-- Dropdown nhân bản, xóa, ngừng sử dụng -->
+  <div
+    v-if="isShowDropdown"
+    class="m-close-dropdown"
+    @click="() => this.isShowDropdown = false"
+  ></div>
   <div
     class="m-dropdown-menu m-dropdown-emp"
     v-if="isShowDropdown"

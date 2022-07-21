@@ -50,6 +50,11 @@
           <div class="m-icon-16 m-icon-arrow-up-black"></div>
         </button>
         <div
+          v-if="isShowBulkDrop"
+          class="m-close-dropdown"
+          @click="() => (this.isShowBulkDrop = false)"
+        ></div>
+        <div
           class="m-bulk-dropdown"
           v-if="isShowBulkDrop"
           :style="{ top: `${bulkTop}px`, left: `${blukLeft}px` }"
@@ -106,7 +111,7 @@
 </template>
 
 <script>
-import { constants, dialogAction } from "@/config";
+import { constants, dialogAction, gender } from "@/config";
 import { mapActions, mapState } from "vuex";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
 import EmployeeDialogVue from "./EmployeeDialog.vue";
@@ -114,6 +119,7 @@ import EmployeePaginationVue from "./EmployeePagination.vue";
 import EmployeeTableVue from "./EmployeeTable.vue";
 import axios from "axios";
 import fileDownload from "js-file-download";
+
 
 export default {
   name: "EmployeeList",
@@ -239,7 +245,7 @@ export default {
      * Author: LinhPV (12/07/22)
      */
     openPopupAdd() {
-      this.selectEmp({});
+      this.selectEmp({ Gender: gender.MALE });
       this.changeEditMode(1);
       this.togglePopup();
     },

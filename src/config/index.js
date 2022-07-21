@@ -15,3 +15,9 @@ export const dialogAction = {
   CONFIRM_DELETE: 2,
   CONFIRM_BULK_DELETE: 3,
 };
+
+export const gender = {
+  MALE: 1,
+  FEMALE: 0,
+  OTHER: 2,
+};

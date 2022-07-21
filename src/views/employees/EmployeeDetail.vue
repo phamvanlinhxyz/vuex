@@ -165,7 +165,7 @@
                             class="m-input-radio"
                             value="1"
                             name="Gender"
-                            checked
+                            :checked="employee.Gender === 1"
                           />
                           <span class="m-radio">
                             <span class="m-radio-border"></span>
@@ -179,6 +179,7 @@
                             class="m-input-radio"
                             value="0"
                             name="Gender"
+                            :checked="employee.Gender === 0"
                           />
                           <span class="m-radio">
                             <span class="m-radio-border"></span>
@@ -192,6 +193,7 @@
                             class="m-input-radio"
                             value="2"
                             name="Gender"
+                            :checked="employee.Gender === 2"
                           />
                           <span class="m-radio">
                             <span class="m-radio-border"></span>
@@ -506,6 +508,11 @@ export default {
       "editEmployee",
       "changeEditMode",
     ]),
+    /**
+     * Di chuyển popup
+     * Author: LinhPV (19/07/22)
+     * @param {event} e 
+     */
     dragMouseDown(e) {
       this.positions.clientX = e.clientX;
       this.positions.clientY = e.clientY;
@@ -921,15 +928,6 @@ export default {
   mounted() {
     // Focus mã nhân viên
     this.$refs.txtEmployeeCode.focus();
-    // Xử lý giới tính
-    let genderInput = document.querySelector(
-      `input[name="Gender"][value="${this.employee.Gender}"]`
-    );
-    if (genderInput) {
-      genderInput.checked = true;
-    } else {
-      document.querySelector('input[name="Gender"][value="1"]').checked = true;
-    }
   },
 };
 </script>

@@ -88,6 +88,7 @@
 
 .m-icon-three-stripes {
   background-position: -843px -30px;
+  cursor: pointer;
 }
 
 .m-icon-chevron-down-bold {
@@ -174,3 +175,7 @@
   background-position: -704px -256px;
 }
 
+.m-icon-sidebar-three-stripes {
+  background-position: -312px -32px;
+  cursor: pointer;
+}

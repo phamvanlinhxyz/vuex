@@ -143,7 +143,7 @@ export default {
     /**
      * Di chuyển dialog
      * Author: LinhPV (19/07/22)
-     * @param {event} e 
+     * @param {event} e
      */
     dragMouseDown(e) {
       this.positions.clientX = e.clientX;

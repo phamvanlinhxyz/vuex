@@ -1,5 +1,5 @@
 <template>
-  <div class="m-popup m-add-popup m-dialog">
+  <div class="m-popup m-add-popup m-dialog" @keydown="keyPress">
     <div class="m-popup-con">
       <div class="m-popup-background"></div>
       <div class="m-popup-drag" ref="dragElm" @mousedown="dragMouseDown">
@@ -390,7 +390,7 @@
                     @click="handleStoreEmployee"
                     ref="btnStore"
                   >
-                    <div class="m-button-text">Cất</div>
+                    <div class="m-button-text" title="Cất (Ctrl + S)">Cất</div>
                   </button>
                   <button
                     class="
@@ -400,8 +400,9 @@
                       m-popup-store-and-add-btn
                     "
                     @click="handleStoreAndAdd"
+                    ref="btnStoreAndAdd"
                   >
-                    <div class="m-button-text">Cất và thêm</div>
+                    <div class="m-button-text"  title="Cất và thêm (Ctrl + Shift + S)">Cất và thêm</div>
                   </button>
                 </div>
               </div>
@@ -509,9 +510,35 @@ export default {
       "changeEditMode",
     ]),
     /**
+     * Sự kiện key press trên popup
+     * Author: LinhPV (22/07/22)
+     * @param {event} e
+     */
+    keyPress(e) {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        if (e.key === "s") {
+          this.$refs.btnStore.click();
+        }
+      }
+      if (e.ctrlKey && e.shiftKey) {
+        e.preventDefault();
+        if (e.key === "s") {
+          this.$refs.btnStoreAndAdd.click();
+        }
+      }
+      switch (e.key) {
+        case "Escape":
+          this.closePopup();
+          break;
+        default:
+          break;
+      }
+    },
+    /**
      * Di chuyển popup
      * Author: LinhPV (19/07/22)
-     * @param {event} e 
+     * @param {event} e
      */
     dragMouseDown(e) {
       this.positions.clientX = e.clientX;

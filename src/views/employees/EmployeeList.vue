@@ -79,10 +79,12 @@
         <div
           class="m-refresh-button m-icon-24 m-icon-refresh"
           @click="reloadData"
+          title="Lấy lại dữ liệu"
         ></div>
         <div
           class="m-refresh-button m-icon-24 m-icon-excel"
           @click="exportExcel"
+          title="Xuất ra Excel"
         ></div>
       </div>
     </div>

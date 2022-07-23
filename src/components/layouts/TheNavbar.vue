@@ -1,7 +1,11 @@
 <template>
   <div class="m-navbar">
     <div class="m-navbar-left">
-      <div class="m-navbar-icon m-icon-24 m-icon-three-stripes"></div>
+      <div
+        class="m-navbar-icon m-icon-24 m-icon-three-stripes"
+        v-if="!isCollapseMenu"
+        @click="toggleCollapse"
+      ></div>
       <div class="m-navbar-branch">
         <div class="m-branch-name">
           CÔNG TY TNHH SẢN XUẤT - THƯƠNG MẠI - DỊCH VỤ QUI PHÚC
@@ -21,3 +25,17 @@
     </div>
   </div>
 </template>
+
+<script>
+import { mapActions, mapState } from "vuex";
+
+export default {
+  name: "TheNavbar",
+  computed: mapState({
+    isCollapseMenu: (state) => state.app.isCollapseMenu,
+  }),
+  methods: {
+    ...mapActions(["toggleCollapse"]),
+  },
+};
+</script>

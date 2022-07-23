@@ -10,6 +10,7 @@ const state = {
     message: "",
     action: dialogAction.DEFAULT,
   },
+  isCollapseMenu: false,
 };
 
 const mutations = {
@@ -28,6 +29,9 @@ const mutations = {
   setContentHeaderTop(state, payload) {
     state.contentHeaderTop = payload;
   },
+  toggleCollapse(state) {
+    state.isCollapseMenu = !state.isCollapseMenu;
+  },
 };
 
 const actions = {
@@ -45,6 +49,9 @@ const actions = {
   },
   toggleLoading(context) {
     context.commit("toggleLoading");
+  },
+  toggleCollapse(context) {
+    context.commit("toggleCollapse");
   },
 };
 

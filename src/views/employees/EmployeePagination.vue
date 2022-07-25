@@ -108,7 +108,7 @@
   <div
     v-if="isShowRecordDropdown"
     class="m-close-dropdown"
-    @click="() => this.isShowRecordDropdown = false"
+    @click="() => (this.isShowRecordDropdown = false)"
   ></div>
   <div
     v-if="isShowRecordDropdown"
@@ -194,29 +194,35 @@ export default {
      * Author: LinhPV (12/07/22)
      */
     selectPrevPage() {
-      const currentPage = parseInt(this.filter.pageNumber);
-
-      if (currentPage > 1) {
-        this.changeData({
-          pageSize: this.filter.pageSize,
-          pageNumber: currentPage - 1,
-          employeeFilter: this.filter.employeeFilter,
-        });
+      try {
+        const currentPage = parseInt(this.filter.pageNumber);
+        if (currentPage > 1) {
+          this.changeData({
+            pageSize: this.filter.pageSize,
+            pageNumber: currentPage - 1,
+            employeeFilter: this.filter.employeeFilter,
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
-     /**
+    /**
      * Chọn trang sau
      * Author: LinhPV (12/07/22)
      */
     selectNextPage() {
-      const currentPage = parseInt(this.filter.pageNumber);
-
-      if (currentPage < this.totalPage) {
-        this.changeData({
-          pageSize: this.filter.pageSize,
-          pageNumber: currentPage + 1,
-          employeeFilter: this.filter.employeeFilter,
-        });
+      try {
+        const currentPage = parseInt(this.filter.pageNumber);
+        if (currentPage < this.totalPage) {
+          this.changeData({
+            pageSize: this.filter.pageSize,
+            pageNumber: currentPage + 1,
+            employeeFilter: this.filter.employeeFilter,
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -225,17 +231,21 @@ export default {
      * @param {event} e
      */
     selectTotalRecord(e) {
-      // Gán value cho input
-      document.querySelector(".m-combo-input").value =
-        e.currentTarget.textContent;
-      const pageSize = parseInt(e.currentTarget.dataset.per);
-      this.changeData({
-        pageSize,
-        pageNumber: 1,
-        employeeFilter: this.filter.employeeFilter,
-      });
-      // Tắt dropdown chọn bản ghi
-      this.isShowRecordDropdown = false;
+      try {
+        // Gán value cho input
+        document.querySelector(".m-combo-input").value =
+          e.currentTarget.textContent;
+        const pageSize = parseInt(e.currentTarget.dataset.per);
+        this.changeData({
+          pageSize,
+          pageNumber: 1,
+          employeeFilter: this.filter.employeeFilter,
+        });
+        // Tắt dropdown chọn bản ghi
+        this.isShowRecordDropdown = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Mở combobox chọn số bản ghi
@@ -256,13 +266,17 @@ export default {
      * @param {event} e
      */
     selectNumberPage(e) {
-      // Lấy số trang
-      let number = parseInt(e.currentTarget.textContent);
-      this.changeData({
-        pageSize: this.filter.pageSize,
-        pageNumber: number,
-        employeeFilter: this.filter.employeeFilter,
-      });
+      try {
+        // Lấy số trang
+        let number = parseInt(e.currentTarget.textContent);
+        this.changeData({
+          pageSize: this.filter.pageSize,
+          pageNumber: number,
+          employeeFilter: this.filter.employeeFilter,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Thay đổi data trên bảng
@@ -270,9 +284,13 @@ export default {
      * @param {object} filter
      */
     changeData(filter) {
-      // Dispatch
-      this.setFilterInfo(filter);
-      this.getEmployees();
+      try {
+        // Dispatch
+        this.setFilterInfo(filter);
+        this.getEmployees();
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   beforeUpdate() {

@@ -37,7 +37,9 @@
           class="m-th m-dynamic-col"
           style="min-width: 145px; width: 145px; top: -71px"
         >
-          <div class="m-th-title">Ngày sinh</div>
+          <div class="m-th-title" :style="{ justifyContent: 'center' }">
+            Ngày sinh
+          </div>
         </th>
         <th
           class="m-th m-dynamoc-col"
@@ -217,7 +219,9 @@
         <td class="m-td">
           {{ emp.GenderName }}
         </td>
-        <td class="m-td">{{ formatDate(emp.DateOfBirth) }}</td>
+        <td class="m-td" :style="{ textAlign: 'center' }">
+          {{ formatDate(emp.DateOfBirth) }}
+        </td>
         <td class="m-td">{{ emp.EmployeePosition }}</td>
         <td class="m-td">{{ emp.IdentityNumber }}</td>
         <td class="m-td">{{ emp.DepartmentName }}</td>
@@ -370,7 +374,7 @@
   <div
     v-if="isShowDropdown"
     class="m-close-dropdown"
-    @click="() => this.isShowDropdown = false"
+    @click="() => (this.isShowDropdown = false)"
   ></div>
   <div
     class="m-dropdown-menu m-dropdown-emp"
@@ -394,7 +398,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import moment from "moment";
-import { dialogAction, formMode } from "@/config";
+import { DialogAction, FormMode } from "@/enums";
 
 export default {
   name: "EmployeeTable",
@@ -433,48 +437,56 @@ export default {
      * Author: LinhPV (16/07/22)
      */
     checkAllRc() {
-      this.checkAll = !this.checkAll;
-      if (!this.checkAll) {
-        var checkBoxs = document.querySelectorAll(".m-input-checkbox");
-        checkBoxs.forEach((checkbox) => {
-          checkbox.checked = false;
-        });
-        this.checkList = [];
-      } else {
-        this.checkList = this.employees.map((emp) => emp.EmployeeId);
+      try {
+        this.checkAll = !this.checkAll;
+        if (!this.checkAll) {
+          var checkBoxs = document.querySelectorAll(".m-input-checkbox");
+          checkBoxs.forEach((checkbox) => {
+            checkbox.checked = false;
+          });
+          this.checkList = [];
+        } else {
+          this.checkList = this.employees.map((emp) => emp.EmployeeId);
+        }
+        // Cập nhật trong store
+        this.updateListSelected(this.checkList);
+      } catch (error) {
+        console.log(error);
       }
-      // Cập nhật trong store
-      this.updateListSelected(this.checkList);
     },
     /**
      * Check 1 record
      * Author: LinhPV (16/07/22)
      */
     checkOneRc(empId) {
-      // Kiểm tra tất cả check box
-      var checkedBoxs = document.querySelectorAll(
-        ".m-input-checkbox:checked"
-      ).length;
-      if (checkedBoxs === this.employees.length) {
-        this.checkAll = true;
-      } else {
-        this.checkAll = false;
-      }
-      // Kiểm tra check box hiện tại đã ở trong list hay chưa
-      if (this.checkList.includes(empId)) {
-        this.checkList = this.checkList.filter((item) => {
-          return item !== empId;
-        });
-      } else {
-        this.checkList.unshift(empId);
-      }
-      // Cập nhật trong store
-      this.updateListSelected(this.checkList);
-      // Kiểm tra có checkbox nào đang check không
-      if (document.querySelectorAll(".m-input-checkbox:checked").length > 0) {
-        this.$emit("checkSelectEmp", true);
-      } else {
-        this.$emit("checkSelectEmp", false);
+      try {
+        // Kiểm tra tất cả check box
+        var checkedBoxs = document.querySelectorAll(
+          ".m-input-checkbox:checked"
+        ).length;
+        if (checkedBoxs === this.employees.length) {
+          this.checkAll = true;
+        } else {
+          this.checkAll = false;
+        }
+        // Kiểm tra check box hiện tại đã ở trong list hay chưa
+        if (this.checkList.includes(empId)) {
+          this.checkList = this.checkList.filter((item) => {
+            return item !== empId;
+          });
+        } else {
+          this.checkList.unshift(empId);
+        }
+        // Cập nhật trong store
+        this.updateListSelected(this.checkList);
+        // Kiểm tra có checkbox nào đang check không
+        if (document.querySelectorAll(".m-input-checkbox:checked").length > 0) {
+          this.$emit("checkSelectEmp", true);
+        } else {
+          this.$emit("checkSelectEmp", false);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -482,9 +494,13 @@ export default {
      * Author: LinhPV (15/07/22)
      */
     replicationEmp() {
-      this.changeEditMode(formMode.STORE);
-      this.isShowDropdown = false;
-      this.togglePopup();
+      try {
+        this.changeEditMode(FormMode.STORE);
+        this.isShowDropdown = false;
+        this.togglePopup();
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Format lại giới tính
@@ -505,9 +521,13 @@ export default {
      * Author: LinhPV (12/07/22)
      */
     editEmployee(emp) {
-      this.changeEditMode(formMode.EDIT);
-      this.selectEmp(emp);
-      this.togglePopup();
+      try {
+        this.changeEditMode(FormMode.EDIT);
+        this.selectEmp(emp);
+        this.togglePopup();
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Mở dropdown tùy chọn
@@ -516,13 +536,17 @@ export default {
      * @param {event} event
      */
     toggleDropdown(emp, event) {
-      if (!this.isShowDropdown) {
-        this.selectEmp(emp);
-        let rect = event.currentTarget.getBoundingClientRect();
-        this.dropdownTop = rect.top + 20;
-        this.dropdownLeft = rect.left + 40;
+      try {
+        if (!this.isShowDropdown) {
+          this.selectEmp(emp);
+          let rect = event.currentTarget.getBoundingClientRect();
+          this.dropdownTop = rect.top + 20;
+          this.dropdownLeft = rect.left + 40;
+        }
+        this.isShowDropdown = !this.isShowDropdown;
+      } catch (error) {
+        console.log(error);
       }
-      this.isShowDropdown = !this.isShowDropdown;
     },
     /**
      * Format định dạng ngày tháng
@@ -537,37 +561,45 @@ export default {
      * Author: LinhPV (13/07/22)
      */
     deleteEmp() {
-      // Hiển thị dialog cofirm
-      this.setDialog({
-        type: "warning",
-        message: `Bạn có thực sự muốn xóa Nhân viên <${this.singleEmployee.EmployeeCode}> không?`,
-        action: dialogAction.CONFIRM_DELETE,
-      });
-      this.toggleDialog();
-      // Tắt dropdown
-      this.isShowDropdown = false;
+      try {
+        // Hiển thị dialog cofirm
+        this.setDialog({
+          type: "warning",
+          message: `Bạn có thực sự muốn xóa Nhân viên <${this.singleEmployee.EmployeeCode}> không?`,
+          action: DialogAction.CONFIRM_DELETE,
+        });
+        this.toggleDialog();
+        // Tắt dropdown
+        this.isShowDropdown = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   updated() {
-    // Cập nhật chiều rộng table
-    this.changeWidthTable(document.querySelector(".m-table").offsetWidth);
+    try {
+      // Cập nhật chiều rộng table
+      this.changeWidthTable(document.querySelector(".m-table").offsetWidth);
 
-    // Kiểm tra checkall
-    if (this.checkAll) {
-      var checkBoxs = document.querySelectorAll(".m-input-checkbox");
-      checkBoxs.forEach((checkbox) => {
-        checkbox.checked = true;
-      });
-      this.checkList = this.employees.map((emp) => emp.EmployeeId);
-      // Cập nhật trong store
-      this.updateListSelected(this.checkList);
-    }
+      // Kiểm tra checkall
+      if (this.checkAll) {
+        var checkBoxs = document.querySelectorAll(".m-input-checkbox");
+        checkBoxs.forEach((checkbox) => {
+          checkbox.checked = true;
+        });
+        this.checkList = this.employees.map((emp) => emp.EmployeeId);
+        // Cập nhật trong store
+        this.updateListSelected(this.checkList);
+      }
 
-    // Kiểm tra có checkbox nào đang check không
-    if (document.querySelectorAll(".m-input-checkbox:checked").length > 0) {
-      this.$emit("checkSelectEmp", true);
-    } else {
-      this.$emit("checkSelectEmp", false);
+      // Kiểm tra có checkbox nào đang check không
+      if (document.querySelectorAll(".m-input-checkbox:checked").length > 0) {
+        this.$emit("checkSelectEmp", true);
+      } else {
+        this.$emit("checkSelectEmp", false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
 };

@@ -4,29 +4,9 @@
     <div class="m-header-di">
       <div class="m-header-title">Nhân viên</div>
       <div class="m-button-group">
-        <!-- <button
-          class="
-            m-button
-            m-button-radius
-            m-dropdown-secondary
-            m-button-secondary
-            m-flex
-            m-align-center
-            m-mr-12
-          "
-        >
-          <div class="m-button-text m-pr-4">Tiện ích</div>
-          <div class="m-icon-16 m-icon-arrow-up-black"></div>
-        </button> -->
-        <button class="m-button m-button-add-emp" @click="openPopupAdd">
+        <button class="m-button" @click="openPopupAdd">
           <div class="m-button-text">Thêm mới nhân viên</div>
         </button>
-        <!-- <button class="m-button m-button-dropdown">
-          <div class="m-button-text m-flex m-justify-center">
-            <div class="m-line"></div>
-            <div class="m-icon-16 m-icon-arrow-up-white"></div>
-          </div>
-        </button> -->
       </div>
     </div>
   </div>
@@ -72,9 +52,13 @@
             type="text"
             class="m-input m-input-icon m-input-search m-search-emp"
             placeholder="Tìm theo mã, tên nhân viên"
+            ref="searchValue"
             @keyup="searchEmployee"
           />
-          <div class="m-icon-after m-icon-16 m-icon-search"></div>
+          <div
+            class="m-icon-after m-icon-16 m-icon-search"
+            @click="searchEmployee"
+          ></div>
         </div>
         <div
           class="m-refresh-button m-icon-24 m-icon-refresh"
@@ -113,7 +97,9 @@
 </template>
 
 <script>
-import { constants, dialogAction, gender } from "@/config";
+import { constants } from "@/config";
+import { DialogAction, Gender } from "@/enums";
+import { DialogMsg } from "@/resources";
 import { mapActions, mapState } from "vuex";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
 import EmployeeDialogVue from "./EmployeeDialog.vue";
@@ -121,7 +107,6 @@ import EmployeePaginationVue from "./EmployeePagination.vue";
 import EmployeeTableVue from "./EmployeeTable.vue";
 import axios from "axios";
 import fileDownload from "js-file-download";
-
 
 export default {
   name: "EmployeeList",
@@ -153,6 +138,24 @@ export default {
   },
   methods: {
     /**
+     * Map actions trong vuex
+     * Author: LinhPV (13/07/22)
+     */
+    ...mapActions([
+      // Employee actions
+      "getEmployees",
+      "setFilterInfo",
+      "selectEmp",
+      "changeEditMode",
+      // App actions
+      "loadData",
+      "setContentHeaderTop",
+      "togglePopup",
+      "bulkDeleteEmployee",
+      "setDialog",
+      "toggleDialog",
+    ]),
+    /**
      * Export file excel
      * Author: LinhPV (17/07/22)
      */
@@ -175,36 +178,22 @@ export default {
       this.isSelectedEmployee = val;
     },
     /**
-     * Map actions trong vuex
-     * Author: LinhPV (13/07/22)
-     */
-    ...mapActions([
-      // Employee actions
-      "getEmployees",
-      "setFilterInfo",
-      "selectEmp",
-      "changeEditMode",
-      // App actions
-      "loadData",
-      "setContentHeaderTop",
-      "togglePopup",
-      "bulkDeleteEmployee",
-      "setDialog",
-      "toggleDialog",
-    ]),
-    /**
      * Thực hiện xóa hàng loạt
      * Author: LinhPV (17/07/22)
      */
     handleBulkDelete() {
-      this.setDialog({
-        message: "Bạn có thực sự muốn xóa những nhân viên đã chọn không?",
-        type: "warning",
-        action: dialogAction.CONFIRM_BULK_DELETE,
-      });
-      this.toggleDialog();
-      // this.bulkDeleteEmployee();
-      this.isShowBulkDrop = false;
+      try {
+        this.setDialog({
+          message: DialogMsg.bulkDelete,
+          type: "warning",
+          action: DialogAction.CONFIRM_BULK_DELETE,
+        });
+        this.toggleDialog();
+        // this.bulkDeleteEmployee();
+        this.isShowBulkDrop = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Mở dropdown thực hiện hàng loạt
@@ -227,37 +216,53 @@ export default {
      * Author: LinhPV (14/07/22)
      */
     reloadData() {
-      this.setFilterInfo({
-        pageSize: this.filter.pageSize,
-        pageNumber: 1,
-        employeeFilter: "",
-      });
-      this.getEmployees();
+      try {
+        this.setFilterInfo({
+          pageSize: this.filter.pageSize,
+          pageNumber: 1,
+          employeeFilter: "",
+        });
+        this.getEmployees();
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Hàm cập nhật content header top
      * Author: LinhPV (12/07/22)
      */
     handleContentScroll() {
-      const scrollTop = document.querySelector(".m-content-body").scrollTop;
-      this.setContentHeaderTop(scrollTop);
+      try {
+        const scrollTop = document.querySelector(".m-content-body").scrollTop;
+        this.setContentHeaderTop(scrollTop);
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Người dùng thêm nhân viên mới
      * Author: LinhPV (12/07/22)
      */
     openPopupAdd() {
-      this.selectEmp({ Gender: gender.MALE });
-      this.changeEditMode(1);
-      this.togglePopup();
+      try {
+        this.selectEmp({ Gender: Gender.MALE });
+        this.changeEditMode(1);
+        this.togglePopup();
+      } catch (error) {
+        console.log(error);
+      }
     },
-    searchEmployee(e) {
-      this.setFilterInfo({
-        pageSize: this.filter.pageSize,
-        pageNumber: 1,
-        employeeFilter: e.currentTarget.value,
-      });
-      this.getEmployees();
+    searchEmployee() {
+      try {
+        this.setFilterInfo({
+          pageSize: this.filter.pageSize,
+          pageNumber: 1,
+          employeeFilter: this.$refs.searchValue.value,
+        });
+        this.getEmployees();
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };

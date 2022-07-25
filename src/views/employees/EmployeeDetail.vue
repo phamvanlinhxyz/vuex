@@ -61,7 +61,7 @@
                             ? 'Mã không được để trống.'
                             : null
                         "
-                        @keyup="checkInputRequire('txtEmployeeCode', $event)"
+                        @input="checkInputRequire('txtEmployeeCode', $event)"
                       />
                     </div>
                     <div class="m-input-60 m-pb-12">
@@ -80,7 +80,7 @@
                             ? 'Tên không được để trống.'
                             : null
                         "
-                        @keyup="checkInputRequire('txtEmployeeName', $event)"
+                        @input="checkInputRequire('txtEmployeeName', $event)"
                       />
                     </div>
                     <div class="m-input-100 m-pb-12">
@@ -108,7 +108,10 @@
                               "
                               @focus="addGreenBorder"
                               @blur="removeGreenBorder"
-                              @keyup="checkDepName('txtDepartmentName', $event)"
+                              @input="checkDepName('txtDepartmentName', $event)"
+                              @keydown="
+                                handleDepartmentKey($event, 'txtDepartmentName')
+                              "
                             />
                           </div>
                           <div class="m-combo-action m-select-department">
@@ -146,13 +149,33 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Ngày sinh</div>
                       </div>
-                      <input
-                        type="date"
-                        class="m-input"
+                      <date-picker
+                        format="DD/MM/YYYY"
+                        placeholder="DD/MM/YYYY"
                         ref="dateDateOfBirth"
-                        :value="formatDateValue(employee.DateOfBirth)"
+                        :value="
+                          employee.DateOfBirth
+                            ? new Date(employee.DateOfBirth)
+                            : null
+                        "
+                        :clearable="false"
+                        :lang="langObject"
+                        :title="
+                          validError.DateOfBirth
+                            ? 'Ngày sinh không hợp lệ'
+                            : null
+                        "
                         @change="selectDate('DateOfBirth', $event)"
-                      />
+                      >
+                        <template #footer="{ emit }">
+                          <button
+                            class="mx-btn mx-btn-text"
+                            @click="emit(new Date())"
+                          >
+                            Hôm nay
+                          </button>
+                        </template>
+                      </date-picker>
                     </div>
                     <div class="m-input-60 m-pb-12">
                       <div class="m-flex-wrap">
@@ -205,7 +228,12 @@
                     </div>
                     <div class="m-input-60 m-pr-6 m-pb-12">
                       <div class="m-flex-wrap">
-                        <div class="m-input-title">Số CMND</div>
+                        <div
+                          class="m-input-title"
+                          title="Số chứng minh nhân dân"
+                        >
+                          Số CMND
+                        </div>
                       </div>
                       <input
                         type="text"
@@ -213,7 +241,7 @@
                         ref="txtIdentityNumber"
                         maxlength="20"
                         v-model="employee.IdentityNumber"
-                        @keyup="checkInputNumber('txtIdentityNumber', $event)"
+                        @input="checkInputNumber('txtIdentityNumber', $event)"
                         :title="
                           validError.txtIdentityNumber
                             ? 'Giá trị số CMND không đúng.'
@@ -225,13 +253,33 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Ngày cấp</div>
                       </div>
-                      <input
-                        type="date"
-                        class="m-input"
+                      <date-picker
+                        format="DD/MM/YYYY"
+                        placeholder="DD/MM/YYYY"
                         ref="dateIdentityDate"
-                        :value="formatDateValue(employee.IdentityDate)"
+                        :value="
+                          employee.IdentityDate
+                            ? new Date(employee.IdentityDate)
+                            : null
+                        "
+                        :clearable="false"
+                        :lang="langObject"
+                        :title="
+                          validError.IdentityDate
+                            ? 'Ngày cấp không hợp lệ'
+                            : null
+                        "
                         @change="selectDate('IdentityDate', $event)"
-                      />
+                      >
+                        <template #footer="{ emit }">
+                          <button
+                            class="mx-btn mx-btn-text"
+                            @click="emit(new Date())"
+                          >
+                            Hôm nay
+                          </button>
+                        </template>
+                      </date-picker>
                     </div>
                     <div class="m-input-100 m-pb-12">
                       <div class="m-flex-wrap">
@@ -270,7 +318,7 @@
                         class="m-input"
                         ref="txtTelephoneNumber"
                         v-model="employee.TelephoneNumber"
-                        @keyup="checkInputNumber('txtTelephoneNumber', $event)"
+                        @input="checkInputNumber('txtTelephoneNumber', $event)"
                         :title="
                           validError.txtTelephoneNumber
                             ? 'Giá trị ĐT di động không đúng.'
@@ -287,7 +335,7 @@
                         class="m-input"
                         ref="txtBankAccountNumber"
                         v-model="employee.BankAccountNumber"
-                        @keyup="
+                        @input="
                           checkInputNumber('txtBankAccountNumber', $event)
                         "
                         :title="
@@ -308,7 +356,7 @@
                         class="m-input"
                         ref="txtPhoneNumber"
                         v-model="employee.PhoneNumber"
-                        @keyup="checkInputNumber('txtPhoneNumber', $event)"
+                        @input="checkInputNumber('txtPhoneNumber', $event)"
                         :title="
                           validError.txtPhoneNumber
                             ? 'Giá trị ĐT cố định không đúng.'
@@ -338,7 +386,7 @@
                         class="m-input"
                         ref="txtEmail"
                         v-model="employee.Email"
-                        @keyup="checkEmail"
+                        @input="checkEmail"
                         :title="
                           validError.txtEmail
                             ? 'Giá trị email không đúng.'
@@ -402,7 +450,12 @@
                     @click="handleStoreAndAdd"
                     ref="btnStoreAndAdd"
                   >
-                    <div class="m-button-text"  title="Cất và thêm (Ctrl + Shift + S)">Cất và thêm</div>
+                    <div
+                      class="m-button-text"
+                      title="Cất và thêm (Ctrl + Shift + S)"
+                    >
+                      Cất và thêm
+                    </div>
                   </button>
                 </div>
               </div>
@@ -466,10 +519,14 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import moment from "moment";
-import { dialogAction, formMode } from "@/config";
+import { DialogMsg, EmployeeMsg } from "@/resources";
+import DatePicker from "vue-datepicker-next";
+import "vue-datepicker-next/index.css";
+import { DialogAction, FormMode } from "@/enums";
 
 export default {
   name: "EmployeeDetail",
+  components: { DatePicker },
   data() {
     return {
       dropdownTop: 0,
@@ -482,6 +539,49 @@ export default {
         clientY: undefined,
         movementX: 0,
         movementY: 0,
+      },
+      departmentIndex: 0,
+      langObject: {
+        formatLocale: {
+          months: [
+            "Tháng Một",
+            "Tháng Hai",
+            "Tháng Ba",
+            "Tháng Tư",
+            "Tháng Năm",
+            "Tháng Sáu",
+            "Tháng Bảy",
+            "Tháng Tám",
+            "Tháng Chín",
+            "Tháng Mười",
+            "Tháng Mười Một",
+            "Tháng Mười Hai",
+          ],
+          monthsShort: [
+            "Tháng 1",
+            "Tháng 2",
+            "Tháng 3",
+            "Tháng 4",
+            "Tháng 5",
+            "Tháng 6",
+            "Tháng 7",
+            "Tháng 8",
+            "Tháng 9",
+            "Tháng 10",
+            "Tháng 11",
+            "Tháng 12",
+          ],
+          weekdays: [
+            "Chủ Nhật",
+            "Thứ Hai",
+            "Thứ Ba",
+            "Thứ Tư",
+            "Thứ Năm",
+            "Thứ Sáu",
+            "Thứ Bảy",
+          ],
+          weekdaysMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+        },
       },
     };
   },
@@ -515,24 +615,31 @@ export default {
      * @param {event} e
      */
     keyPress(e) {
-      if (e.ctrlKey) {
-        e.preventDefault();
-        if (e.key === "s") {
-          this.$refs.btnStore.click();
+      try {
+        // Người dùng Ctrl S
+        if (e.ctrlKey) {
+          e.preventDefault();
+          if (e.key === "s") {
+            this.$refs.btnStore.click();
+          }
         }
-      }
-      if (e.ctrlKey && e.shiftKey) {
-        e.preventDefault();
-        if (e.key === "s") {
-          this.$refs.btnStoreAndAdd.click();
+        // Người dùng Ctrl Shift S
+        if (e.ctrlKey && e.shiftKey) {
+          e.preventDefault();
+          if (e.key === "s") {
+            this.$refs.btnStoreAndAdd.click();
+          }
         }
-      }
-      switch (e.key) {
-        case "Escape":
-          this.closePopup();
-          break;
-        default:
-          break;
+        // Người dùng ESC
+        switch (e.key) {
+          case "Escape":
+            this.closePopup();
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -541,10 +648,16 @@ export default {
      * @param {event} e
      */
     dragMouseDown(e) {
-      this.positions.clientX = e.clientX;
-      this.positions.clientY = e.clientY;
-      document.onmousemove = this.handleDrag;
-      document.onmouseup = this.closeDrag;
+      try {
+        if (e.target.tagName !== "INPUT") {
+          this.positions.clientX = e.clientX;
+          this.positions.clientY = e.clientY;
+          document.onmousemove = this.handleDrag;
+          document.onmouseup = this.closeDrag;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     handleDrag(e) {
       this.positions.movementX = this.positions.clientX - e.clientX;
@@ -577,15 +690,23 @@ export default {
      * Author: LinhPV (15/07/22)
      */
     handleStoreAndAdd() {
-      var mode =
-        this.editMode === formMode.STORE
-          ? formMode.STORE_AND_ADD
-          : this.editMode === formMode.EDIT
-          ? formMode.EDIt_AND_ADD
-          : null;
-      this.changeEditMode(mode);
-      this.handleStoreEmployee();
+      try {
+        var mode =
+          this.editMode === FormMode.STORE
+            ? FormMode.STORE_AND_ADD
+            : this.editMode === FormMode.EDIT
+            ? FormMode.EDIt_AND_ADD
+            : null;
+        this.changeEditMode(mode);
+        this.handleStoreEmployee();
+      } catch (error) {
+        console.log(error);
+      }
     },
+    /**
+     * Xử lý đóng dropdown chọn phòng ban
+     * Author: LinhPV (25/07/22)
+     */
     handleClose() {
       let comboElm = this.$refs.comboDepartment;
       comboElm.classList.remove("m-input-focus");
@@ -595,25 +716,25 @@ export default {
      * Xử lý thêm nhân viên
      */
     handleStoreEmployee() {
-      const isValid = this.validationData();
-      if (isValid) {
-        // Xử lý giới tính
-        this.employee.Gender = document.querySelector(
-          'input[name="Gender"]:checked'
-        ).value;
-        // Nếu editMode = 1, 3 => Thêm
-        if (
-          this.editMode === formMode.STORE ||
-          this.editMode === formMode.STORE_AND_ADD
-        ) {
-          this.addEmployee();
-          // Nếu editMode = 2, 4 => Sửa
-        } else if (
-          this.editMode === formMode.EDIT ||
-          this.editMode === formMode.EDIt_AND_ADD
-        ) {
-          this.editEmployee();
+      try {
+        const isValid = this.validationData();
+        if (isValid) {
+          // Nếu editMode = 1, 3 => Thêm
+          if (
+            this.editMode === FormMode.STORE ||
+            this.editMode === FormMode.STORE_AND_ADD
+          ) {
+            this.addEmployee();
+            // Nếu editMode = 2, 4 => Sửa
+          } else if (
+            this.editMode === FormMode.EDIT ||
+            this.editMode === FormMode.EDIt_AND_ADD
+          ) {
+            this.editEmployee();
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -621,141 +742,145 @@ export default {
      * Author: LinhPV (14/07/22)
      */
     validationData() {
-      let dataEmployee = this.employee;
-      let dialog;
-      // 1. Kiểm tra các input bắt buộc
-      if (!dataEmployee.EmployeeCode) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Mã không được bỏ trống.",
-          };
-          this.focus = this.$refs.txtEmployeeCode;
+      try {
+        let dataEmployee = this.employee;
+        let dialog;
+        // 1. Kiểm tra các input bắt buộc
+        if (!dataEmployee.EmployeeCode) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.emptyEmployeeCode,
+            };
+            this.focus = this.$refs.txtEmployeeCode;
+          }
+          this.$refs.txtEmployeeCode.classList.add("m-input-error");
         }
-        this.$refs.txtEmployeeCode.classList.add("m-input-error");
-      }
-      if (!dataEmployee.EmployeeName) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Tên không được bỏ trống.",
-          };
-          this.focus = this.$refs.txtEmployeeName;
+        if (!dataEmployee.EmployeeName) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.emptyEmployeeName,
+            };
+            this.focus = this.$refs.txtEmployeeName;
+          }
+          this.$refs.txtEmployeeName.classList.add("m-input-error");
         }
-        this.$refs.txtEmployeeName.classList.add("m-input-error");
-      }
-      if (!dataEmployee.DepartmentName) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Đơn vị không được bỏ trống.",
-          };
-          this.focus = this.$refs.txtDepartmentName;
+        if (!dataEmployee.DepartmentName) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.emptyDepartmentName,
+            };
+            this.focus = this.$refs.txtDepartmentName;
+          }
+          this.$refs.comboDepartment.classList.add("m-input-error");
         }
-        this.$refs.comboDepartment.classList.add("m-input-error");
-      }
-      // 2. Kiểm tra định dạng ngày tháng
-      let dob = this.$refs.dateDateOfBirth.value;
-      if (dob && (!moment(dob).isValid() || new Date(dob) - new Date() > 0)) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Ngày sinh không hợp lệ.",
-          };
-          this.focus = this.$refs.dateDateOfBirth;
+        // 2. Kiểm tra định dạng ngày tháng
+        let dob = this.$refs.dateDateOfBirth.value;
+        if (dob && (!moment(dob).isValid() || new Date(dob) - new Date() > 0)) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.dobNotValid,
+            };
+            this.focus = this.$refs.dateDateOfBirth;
+          }
         }
-      }
-      let idDate = this.$refs.dateIdentityDate.value;
-      if (
-        idDate &&
-        (!moment(idDate).isValid() || new Date(idDate) - new Date() > 0)
-      ) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Ngày cấp không hợp lệ.",
-          };
-          this.focus = this.$refs.dateIdentityDate;
+        let idDate = this.$refs.dateIdentityDate.value;
+        if (
+          idDate &&
+          (!moment(idDate).isValid() || new Date(idDate) - new Date() > 0)
+        ) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.idDateNotValid,
+            };
+            this.focus = this.$refs.dateIdentityDate;
+          }
         }
-      }
-      // 3. Kiểm tra định dạng email
-      let empEmail = this.employee.Email;
-      var regex =
-        /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+)((\.[a-zA-Z0-9-]{2,3})+)$/;
-      if (empEmail && !empEmail.match(regex)) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Email không hợp lệ.",
-          };
-          this.focus = this.$refs.txtEmail;
+        // 3. Kiểm tra định dạng email
+        let empEmail = this.employee.Email;
+        var regex =
+          /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+)((\.[a-zA-Z0-9-]{2,3})+)$/;
+        if (empEmail && !empEmail.match(regex)) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.emailNotvalid,
+            };
+            this.focus = this.$refs.txtEmail;
+          }
+          this.$refs.txtEmail.classList.add("m-input-error");
         }
-        this.$refs.txtEmail.classList.add("m-input-error");
-      }
-      // 4. Kiểm tra định dạng các input dạng số
-      let idNumber = this.employee.IdentityNumber;
-      if (idNumber && isNaN(idNumber)) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Số CMND không hợp lệ.",
-          };
-          this.focus = this.$refs.txtIdentityNumber;
+        // 4. Kiểm tra định dạng các input dạng số
+        let idNumber = this.employee.IdentityNumber;
+        if (idNumber && isNaN(idNumber)) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.idNumberNotValid,
+            };
+            this.focus = this.$refs.txtIdentityNumber;
+          }
+          this.$refs.txtIdentityNumber.classList.add("m-input-error");
         }
-        this.$refs.txtIdentityNumber.classList.add("m-input-error");
-      }
-      let tlphoneNumber = this.employee.TelephoneNumber;
-      if (tlphoneNumber && isNaN(tlphoneNumber)) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "ĐT di động không hợp lệ.",
-          };
-          this.focus = this.$refs.txtTelephoneNumber;
+        let tlphoneNumber = this.employee.TelephoneNumber;
+        if (tlphoneNumber && isNaN(tlphoneNumber)) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.tlphoneNotValid,
+            };
+            this.focus = this.$refs.txtTelephoneNumber;
+          }
+          this.$refs.txtTelephoneNumber.classList.add("m-input-error");
         }
-        this.$refs.txtTelephoneNumber.classList.add("m-input-error");
-      }
-      let phoneNumber = this.employee.PhoneNumber;
-      if (phoneNumber && isNaN(phoneNumber)) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "ĐT cố định không hợp lệ.",
-          };
-          this.focus = this.$refs.txtPhoneNumber;
+        let phoneNumber = this.employee.PhoneNumber;
+        if (phoneNumber && isNaN(phoneNumber)) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.phoneNotValid,
+            };
+            this.focus = this.$refs.txtPhoneNumber;
+          }
+          this.$refs.txtPhoneNumber.classList.add("m-input-error");
         }
-        this.$refs.txtPhoneNumber.classList.add("m-input-error");
-      }
-      let bankNumber = this.employee.BankAccountNumber;
-      if (bankNumber && isNaN(bankNumber)) {
-        if (!dialog) {
-          dialog = {
-            type: "danger",
-            message: "Tài khoản ngân hàng không hợp lệ.",
-          };
-          this.focus = this.$refs.txtBankAccountNumber;
+        let bankNumber = this.employee.BankAccountNumber;
+        if (bankNumber && isNaN(bankNumber)) {
+          if (!dialog) {
+            dialog = {
+              type: "danger",
+              message: EmployeeMsg.bankNumberNotValid,
+            };
+            this.focus = this.$refs.txtBankAccountNumber;
+          }
+          this.$refs.txtBankAccountNumber.classList.add("m-input-error");
         }
-        this.$refs.txtBankAccountNumber.classList.add("m-input-error");
+        // Return
+        if (dialog) {
+          this.setDialog(dialog);
+          this.toggleDialog();
+          return false;
+        }
+        return true;
+      } catch (error) {
+        console.log(error);
       }
-      // Return
-      if (dialog) {
-        this.setDialog(dialog);
-        this.toggleDialog();
-        return false;
-      }
-      return true;
     },
     /**
      * Check các input dạng số
      * Author: LinhPV (14/07/22)
      */
     checkInputNumber(ref, e) {
-      if (!e.currentTarget.value || isNaN(e.currentTarget.value)) {
-        e.currentTarget.classList.add("m-input-error");
-        this.validError[ref] = true;
-      } else {
+      if (!e.currentTarget.value || !isNaN(e.currentTarget.value)) {
         e.currentTarget.classList.remove("m-input-error");
         this.validError[ref] = false;
+      } else {
+        e.currentTarget.classList.add("m-input-error");
+        this.validError[ref] = true;
       }
     },
     /**
@@ -765,27 +890,34 @@ export default {
     checkEmail(e) {
       var regex =
         /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+)((\.[a-zA-Z0-9-]{2,3})+)$/;
-      if (!e.currentTarget.value.match(regex)) {
-        e.currentTarget.classList.add("m-input-error");
-        this.validError.txtEmail = true;
-      } else {
+      if (!e.currentTarget.value || e.currentTarget.value.match(regex)) {
         e.currentTarget.classList.remove("m-input-error");
         this.validError.txtEmail = false;
+      } else {
+        e.currentTarget.classList.add("m-input-error");
+        this.validError.txtEmail = true;
       }
     },
     /**
      * Người dùng nhập các input dạng ngày tháng
      * Author: LinhPV (14/07/22)
-     * @param {string} path
-     * @param {event} e
+     * @param {string} ref
+     * @param {date} val
      */
-    selectDate(path, e) {
-      var val = e.currentTarget.value;
+    selectDate(ref, val) {
+      var inputElm = this.$refs[`date${ref}`].querySelector("input");
       if (moment(val).isValid() && new Date(val) - new Date() < 0) {
-        this.employee[path] = val;
-        e.currentTarget.classList.remove("m-input-error");
+        inputElm.classList.remove("m-input-error");
+        this.validError[ref] = false;
+        this.employee[ref] = moment(val).format("YYYY-MM-DDThh:mm:ss");
+      } else if (!val) {
+        inputElm.classList.remove("m-input-error");
+        this.validError[ref] = false;
+        this.employee[ref] = null;
       } else {
-        e.currentTarget.classList.add("m-input-error");
+        inputElm.classList.add("m-input-error");
+        this.validError[ref] = true;
+        this.employee[ref] = null;
       }
     },
     /**
@@ -802,15 +934,46 @@ export default {
       }
     },
     /**
-     * Check department name khi người dùng nhập vào
-     * Author: LinhPV (14/07/22)
+     * Hàm xử lý lên xuống chọn department
+     * @param {string} key
+     * @param {string} ref
      */
-    checkDepName(ref, e) {
-      // Gán vị trí dropdown chọn đơn vị
+    handleDepartmentKey(e, ref) {
+      console.log("arrow");
       let rect = this.$refs.buttonDropdown.getBoundingClientRect();
       this.dropdownTop = rect.top + 33;
       this.dropdownLeft = rect.left - 359;
       this.isShowDropdown = true;
+      if (e.key === "ArrowUp" && this.departmentIndex !== 0) {
+        --this.departmentIndex;
+      } else if (
+        e.key === "ArrowDown" &&
+        this.departmentIndex !== this.departments.length - 1
+      ) {
+        ++this.departmentIndex;
+      } else if (e.key === "Enter") {
+        this.isShowDropdown = false;
+      } else if (e.key === "Tab") {
+        this.isShowDropdown = false;
+        return;
+      } else {
+        return;
+      }
+      this.employee.DepartmentId =
+        this.departments[this.departmentIndex].DepartmentId;
+      this.employee.DepartmentName =
+        this.departments[this.departmentIndex].DepartmentName;
+      let comboElm = this.$refs.comboDepartment;
+      comboElm.classList.remove("m-input-error");
+      this.validError[ref] = false;
+    },
+    /**
+     * Tìm department theo tên
+     * Author: LinhPV (25/07/2022)
+     * @param {string} ref
+     * @param {event} e
+     */
+    handleFindDep(ref, e) {
       let comboElm = this.$refs.comboDepartment;
       // Lọc đơn vị
       let depName = e.currentTarget.value;
@@ -827,6 +990,22 @@ export default {
         this.employee.DepartmentId = findDep.DepartmentId;
         comboElm.classList.remove("m-input-error");
         this.validError[ref] = false;
+      }
+    },
+    /**
+     * Check department name khi người dùng nhập vào
+     * Author: LinhPV (14/07/22)
+     */
+    checkDepName(ref, e) {
+      try {
+        // Gán vị trí dropdown chọn đơn vị
+        let rect = this.$refs.buttonDropdown.getBoundingClientRect();
+        this.dropdownTop = rect.top + 33;
+        this.dropdownLeft = rect.left - 359;
+        this.isShowDropdown = true;
+        this.handleFindDep(ref, e);
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -877,29 +1056,33 @@ export default {
      * Author: LinhPV (14/07/22)
      */
     objectEqual(object1, object2) {
-      const keys1 = Object.keys(object1);
-      const keys2 = Object.keys(object2);
+      try {
+        const keys1 = Object.keys(object1);
+        const keys2 = Object.keys(object2);
 
-      // Check số lượng key của 2 object
-      if (keys1.length !== keys2.length) {
-        return false;
-      }
-
-      // Check lần lượt các value
-      for (const key of keys1) {
-        const val1 = object1[key];
-        const val2 = object2[key];
-        const areObjects = this.isObject(val1) && this.isObject(val2);
-
-        if (
-          (areObjects && !this.objectEqual(val1, val2)) ||
-          (!areObjects && val1 !== val2)
-        ) {
+        // Check số lượng key của 2 object
+        if (keys1.length !== keys2.length) {
           return false;
         }
-      }
 
-      return true;
+        // Check lần lượt các value
+        for (const key of keys1) {
+          const val1 = object1[key];
+          const val2 = object2[key];
+          const areObjects = this.isObject(val1) && this.isObject(val2);
+
+          if (
+            (areObjects && !this.objectEqual(val1, val2)) ||
+            (!areObjects && val1 !== val2)
+          ) {
+            return false;
+          }
+        }
+
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
     },
     isObject(object) {
       return object != null && typeof object === "object";
@@ -909,16 +1092,20 @@ export default {
      * Author: LinhPV (14/07/22)
      */
     closePopup() {
-      // Check dữ liệu trên popup đã thay đổi
-      if (!this.objectEqual(this.employee, this.singleEmployee)) {
-        this.setDialog({
-          type: "question",
-          message: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
-          action: dialogAction.CONFIRM_STORE,
-        });
-        this.toggleDialog();
-      } else {
-        this.togglePopup();
+      try {
+        // Check dữ liệu trên popup đã thay đổi
+        if (!this.objectEqual(this.employee, this.singleEmployee)) {
+          this.setDialog({
+            type: "question",
+            message: DialogMsg.dataChange,
+            action: DialogAction.CONFIRM_STORE,
+          });
+          this.toggleDialog();
+        } else {
+          this.togglePopup();
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -944,13 +1131,17 @@ export default {
     },
   },
   created() {
-    // Check mode
-    if (this.editMode === formMode.STORE) {
-      // Gọi API lấy mã mới
-      this.setNewEmployeeCode();
+    try {
+      // Check mode
+      if (this.editMode === FormMode.STORE) {
+        // Gọi API lấy mã mới
+        this.setNewEmployeeCode();
+      }
+      // Gọi API lấy department
+      this.getDepartments();
+    } catch (error) {
+      console.log(error);
     }
-    // Gọi API lấy department
-    this.getDepartments();
   },
   mounted() {
     // Focus mã nhân viên

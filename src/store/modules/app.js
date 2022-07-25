@@ -1,4 +1,4 @@
-import { dialogAction } from "@/config";
+import { DialogAction } from "@/enums";
 
 const state = {
   isShowPopup: false,
@@ -8,7 +8,7 @@ const state = {
   dialog: {
     type: "success",
     message: "",
-    action: dialogAction.DEFAULT,
+    action: DialogAction.DEFAULT,
   },
   isCollapseMenu: false,
 };

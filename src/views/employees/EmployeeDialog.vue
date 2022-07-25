@@ -108,7 +108,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import { dialogAction } from "@/config";
+import { DialogAction } from "@/enums";
 
 export default {
   name: "EmployeeDialog",
@@ -182,8 +182,12 @@ export default {
      * Author: LinhPV (14/07/22)
      */
     closeAll() {
-      this.toggleDialog();
-      this.togglePopup();
+      try {
+        this.toggleDialog();
+        this.togglePopup();
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Đóng dialog
@@ -197,24 +201,28 @@ export default {
      * Author: LinhPV (13/07/22)
      */
     confirmClick() {
-      switch (this.dialog.action) {
-        // Store
-        case dialogAction.CONFIRM_STORE:
-          this.toggleDialog();
-          this.$emit("setIsStore");
-          break;
-        // Delete
-        case dialogAction.CONFIRM_DELETE:
-          // Đóng dialog
-          this.toggleDialog();
-          // Xóa nhân viên
-          this.deleteEmployee(this.singleEmployee.EmployeeId);
-          break;
-        case dialogAction.CONFIRM_BULK_DELETE:
-          // Đóng dialog
-          this.toggleDialog();
-          // Xóa hàng loạt
-          this.bulkDeleteEmployee();
+      try {
+        switch (this.dialog.action) {
+          // Store
+          case DialogAction.CONFIRM_STORE:
+            this.toggleDialog();
+            this.$emit("setIsStore");
+            break;
+          // Delete
+          case DialogAction.CONFIRM_DELETE:
+            // Đóng dialog
+            this.toggleDialog();
+            // Xóa nhân viên
+            this.deleteEmployee(this.singleEmployee.EmployeeId);
+            break;
+          case DialogAction.CONFIRM_BULK_DELETE:
+            // Đóng dialog
+            this.toggleDialog();
+            // Xóa hàng loạt
+            this.bulkDeleteEmployee();
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
   },

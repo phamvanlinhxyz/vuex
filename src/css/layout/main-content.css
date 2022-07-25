@@ -10,7 +10,7 @@
 }
 
 .m-content-header {
-  padding: 24px 30px 11px 0;
+  padding: 24px 20px 11px 0;
   position: absolute;
   z-index: 29;
   align-items: center;
@@ -31,7 +31,7 @@
 
 .m-content-body {
   flex: 1;
-  padding-right: 30px;
+  padding-right: 20px;
   padding-top: 71px;
   display: flex;
   flex-direction: column;

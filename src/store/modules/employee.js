@@ -1,4 +1,6 @@
-import { constants, dialogAction, formMode, gender } from "@/config";
+import { constants } from "@/config";
+import {  DialogMsg } from "@/resources";
+import { DialogAction, FormMode, Gender } from "@/enums";
 import axios from "axios";
 
 const state = {
@@ -107,8 +109,8 @@ const actions = {
       // Dispatch thông báo thành công
       context.dispatch("setDialog", {
         type: "success",
-        message: "Xóa nhân viên thành công.",
-        action: dialogAction.DEFAULT,
+        message: DialogMsg.deleteSuccess,
+        action: DialogAction.DEFAULT,
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
@@ -136,20 +138,20 @@ const actions = {
       // Dispatch thông báo thành công
       context.dispatch("setDialog", {
         type: "success",
-        message: "Thêm mới nhân viên thành công.",
-        action: dialogAction.DEFAULT,
+        message: DialogMsg.storeSuccess,
+        action: DialogAction.DEFAULT,
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
 
       // Check mode
-      if (state.editMode === formMode.STORE) {
+      if (state.editMode === FormMode.STORE) {
         // Cất
         context.dispatch("togglePopup");
       } else {
         // Cất và thêm
-        context.dispatch("changeEditMode", formMode.STORE);
-        context.dispatch("selectEmp", { Gender: gender.MALE });
+        context.dispatch("changeEditMode", FormMode.STORE);
+        context.dispatch("selectEmp", { Gender: Gender.MALE });
         context.dispatch("setNewEmployeeCode");
       }
 
@@ -171,20 +173,20 @@ const actions = {
       // Dispatch thông báo thành công
       context.dispatch("setDialog", {
         type: "success",
-        message: "Sửa nhân viên thành công.",
-        action: dialogAction.DEFAULT,
+        message: DialogMsg.editSuccess,
+        action: DialogAction.DEFAULT,
       });
       context.dispatch("toggleLoading");
       context.dispatch("toggleDialog");
 
       // Check mode
-      if (state.editMode === formMode.EDIT) {
+      if (state.editMode === FormMode.EDIT) {
         // Cất
         context.dispatch("togglePopup");
       } else {
         // Cất và thêm
-        context.dispatch("changeEditMode", formMode.STORE);
-        context.dispatch("selectEmp", { Gender: gender.MALE });
+        context.dispatch("changeEditMode", FormMode.STORE);
+        context.dispatch("selectEmp", { Gender: Gender.MALE });
         context.dispatch("setNewEmployeeCode");
       }
 
@@ -210,7 +212,7 @@ const actions = {
       context.dispatch("setDialog", {
         type: "success",
         message: `Đã xóa thành công ${res.data} bản ghi.`,
-        action: dialogAction.DEFAULT,
+        action: DialogAction.DEFAULT,
       });
       context.dispatch("toggleDialog");
 
@@ -228,7 +230,7 @@ const handleException = (error, context) => {
   context.dispatch("setDialog", {
     type: "danger",
     message: error.response.data.userMsg,
-    action: dialogAction.DEFAULT,
+    action: DialogAction.DEFAULT,
   });
   context.dispatch("toggleDialog");
 };

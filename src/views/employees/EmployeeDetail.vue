@@ -32,11 +32,12 @@
                 class="m-icon-24 m-icon-help"
                 style="margin-right: 6px"
               ></div>
-              <div
-                class="m-icon-24 m-icon-close m-close-add-popup"
-                title="Đóng (ESC)"
-                @click="closePopup"
-              ></div>
+              <el-tooltip content="Đóng (ESC)">
+                <div
+                  class="m-icon-24 m-icon-close m-close-add-popup"
+                  @click="closePopup"
+                ></div>
+              </el-tooltip>
             </div>
           </div>
           <!-- Popup content -->
@@ -50,38 +51,40 @@
                         <div class="m-input-title">Mã</div>
                         <div class="m-input-title-require">&nbsp;*</div>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input m-input-require"
-                        maxlength="25"
-                        v-model="employee.EmployeeCode"
-                        ref="txtEmployeeCode"
-                        :title="
-                          validError.txtEmployeeCode
-                            ? 'Mã không được để trống.'
-                            : null
-                        "
-                        @input="checkInputRequire('txtEmployeeCode', $event)"
-                      />
+                      <el-tooltip
+                        content="Mã không được bỏ trống."
+                        :disabled="validError.txtEmployeeCode ? false : true"
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input m-input-require"
+                          maxlength="25"
+                          v-model="employee.EmployeeCode"
+                          ref="txtEmployeeCode"
+                          @input="checkInputRequire('txtEmployeeCode', $event)"
+                        />
+                      </el-tooltip>
                     </div>
                     <div class="m-input-60 m-pb-12">
                       <div class="m-flex">
                         <div class="m-input-title">Tên</div>
                         <div class="m-input-title-require">&nbsp;*</div>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input m-input-require"
-                        maxlength="128"
-                        v-model="employee.EmployeeName"
-                        ref="txtEmployeeName"
-                        :title="
-                          validError.txtEmployeeName
-                            ? 'Tên không được để trống.'
-                            : null
-                        "
-                        @input="checkInputRequire('txtEmployeeName', $event)"
-                      />
+                      <el-tooltip
+                        content="Tên không được bỏ trống."
+                        :disabled="validError.txtEmployeeName ? false : true"
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input m-input-require"
+                          maxlength="128"
+                          v-model="employee.EmployeeName"
+                          ref="txtEmployeeName"
+                          @input="checkInputRequire('txtEmployeeName', $event)"
+                        />
+                      </el-tooltip>
                     </div>
                     <div class="m-input-100 m-pb-12">
                       <div class="m-flex">
@@ -96,23 +99,31 @@
                               ref="txtDepartmentId"
                               v-model="employee.DepartmentId"
                             />
-                            <input
-                              type="text"
-                              class="m-combo-input"
-                              ref="txtDepartmentName"
-                              v-model="employee.DepartmentName"
-                              :title="
-                                validError.txtDepartmentName
-                                  ? 'Đơn vị không có trong hệ thống.'
-                                  : null
+                            <el-tooltip
+                              content="Đơn vị không có trong hệ thống."
+                              :disabled="
+                                validError.txtDepartmentName ? false : true
                               "
-                              @focus="addGreenBorder"
-                              @blur="removeGreenBorder"
-                              @input="checkDepName('txtDepartmentName', $event)"
-                              @keydown="
-                                handleDepartmentKey($event, 'txtDepartmentName')
-                              "
-                            />
+                              effect="danger"
+                            >
+                              <input
+                                type="text"
+                                class="m-combo-input"
+                                ref="txtDepartmentName"
+                                v-model="employee.DepartmentName"
+                                @focus="addGreenBorder"
+                                @blur="removeGreenBorder"
+                                @input="
+                                  checkDepName('txtDepartmentName', $event)
+                                "
+                                @keydown="
+                                  handleDepartmentKey(
+                                    $event,
+                                    'txtDepartmentName'
+                                  )
+                                "
+                              />
+                            </el-tooltip>
                           </div>
                           <div class="m-combo-action m-select-department">
                             <div
@@ -149,33 +160,34 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Ngày sinh</div>
                       </div>
-                      <date-picker
-                        format="DD/MM/YYYY"
-                        placeholder="DD/MM/YYYY"
-                        ref="dateDateOfBirth"
-                        :value="
-                          employee.DateOfBirth
-                            ? new Date(employee.DateOfBirth)
-                            : null
-                        "
-                        :clearable="false"
-                        :lang="langObject"
-                        :title="
-                          validError.DateOfBirth
-                            ? 'Ngày sinh không hợp lệ'
-                            : null
-                        "
-                        @change="selectDate('DateOfBirth', $event)"
+                      <el-tooltip
+                        content="Ngày sinh không hợp lệ"
+                        :disabled="validError.DateOfBirth ? false : true"
+                        effect="danger"
                       >
-                        <template #footer="{ emit }">
-                          <button
-                            class="mx-btn mx-btn-text"
-                            @click="emit(new Date())"
-                          >
-                            Hôm nay
-                          </button>
-                        </template>
-                      </date-picker>
+                        <date-picker
+                          format="DD/MM/YYYY"
+                          placeholder="DD/MM/YYYY"
+                          ref="dateDateOfBirth"
+                          :value="
+                            employee.DateOfBirth
+                              ? new Date(employee.DateOfBirth)
+                              : null
+                          "
+                          :clearable="false"
+                          :lang="langObject"
+                          @change="selectDate('DateOfBirth', $event)"
+                        >
+                          <template #footer="{ emit }">
+                            <button
+                              class="mx-btn mx-btn-text"
+                              @click="emit(new Date())"
+                            >
+                              Hôm nay
+                            </button>
+                          </template>
+                        </date-picker>
+                      </el-tooltip>
                     </div>
                     <div class="m-input-60 m-pb-12">
                       <div class="m-flex-wrap">
@@ -228,58 +240,60 @@
                     </div>
                     <div class="m-input-60 m-pr-6 m-pb-12">
                       <div class="m-flex-wrap">
-                        <div
-                          class="m-input-title"
-                          title="Số chứng minh nhân dân"
+                        <el-tooltip
+                          content="Số chứng minh nhân dân"
+                          placement="bottom"
                         >
-                          Số CMND
-                        </div>
+                          <div class="m-input-title">Số CMND</div>
+                        </el-tooltip>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input"
-                        ref="txtIdentityNumber"
-                        maxlength="20"
-                        v-model="employee.IdentityNumber"
-                        @input="checkInputNumber('txtIdentityNumber', $event)"
-                        :title="
-                          validError.txtIdentityNumber
-                            ? 'Giá trị số CMND không đúng.'
-                            : null
-                        "
-                      />
+                      <el-tooltip
+                        content="Giá trị số CMND không đúng."
+                        :disabled="validError.txtIdentityNumber ? false : true"
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input"
+                          ref="txtIdentityNumber"
+                          maxlength="20"
+                          v-model="employee.IdentityNumber"
+                          @input="checkInputNumber('txtIdentityNumber', $event)"
+                        />
+                      </el-tooltip>
                     </div>
                     <div class="m-input-40 m-pb-12">
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Ngày cấp</div>
                       </div>
-                      <date-picker
-                        format="DD/MM/YYYY"
-                        placeholder="DD/MM/YYYY"
-                        ref="dateIdentityDate"
-                        :value="
-                          employee.IdentityDate
-                            ? new Date(employee.IdentityDate)
-                            : null
-                        "
-                        :clearable="false"
-                        :lang="langObject"
-                        :title="
-                          validError.IdentityDate
-                            ? 'Ngày cấp không hợp lệ'
-                            : null
-                        "
-                        @change="selectDate('IdentityDate', $event)"
+                      <el-tooltip
+                        content="Ngày cấp không hợp lệ."
+                        :disabled="validError.IdentityDate ? false : true"
+                        effect="danger"
                       >
-                        <template #footer="{ emit }">
-                          <button
-                            class="mx-btn mx-btn-text"
-                            @click="emit(new Date())"
-                          >
-                            Hôm nay
-                          </button>
-                        </template>
-                      </date-picker>
+                        <date-picker
+                          format="DD/MM/YYYY"
+                          placeholder="DD/MM/YYYY"
+                          ref="dateIdentityDate"
+                          :value="
+                            employee.IdentityDate
+                              ? new Date(employee.IdentityDate)
+                              : null
+                          "
+                          :clearable="false"
+                          :lang="langObject"
+                          @change="selectDate('IdentityDate', $event)"
+                        >
+                          <template #footer="{ emit }">
+                            <button
+                              class="mx-btn mx-btn-text"
+                              @click="emit(new Date())"
+                            >
+                              Hôm nay
+                            </button>
+                          </template>
+                        </date-picker>
+                      </el-tooltip>
                     </div>
                     <div class="m-input-100 m-pb-12">
                       <div class="m-flex-wrap">
@@ -313,37 +327,43 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">ĐT di động</div>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input"
-                        ref="txtTelephoneNumber"
-                        v-model="employee.TelephoneNumber"
-                        @input="checkInputNumber('txtTelephoneNumber', $event)"
-                        :title="
-                          validError.txtTelephoneNumber
-                            ? 'Giá trị ĐT di động không đúng.'
-                            : null
-                        "
-                      />
+                      <el-tooltip
+                        content="Giá trị ĐT di động không đúng."
+                        :disabled="validError.txtTelephoneNumber ? false : true"
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input"
+                          ref="txtTelephoneNumber"
+                          v-model="employee.TelephoneNumber"
+                          @input="
+                            checkInputNumber('txtTelephoneNumber', $event)
+                          "
+                        />
+                      </el-tooltip>
                     </div>
                     <div class="m-input-100 m-pb-12">
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Tài khoản ngân hàng</div>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input"
-                        ref="txtBankAccountNumber"
-                        v-model="employee.BankAccountNumber"
-                        @input="
-                          checkInputNumber('txtBankAccountNumber', $event)
+                      <el-tooltip
+                        content="Giá trị tài khoản ngân hàng không đúng."
+                        :disabled="
+                          validError.txtBankAccountNumber ? false : true
                         "
-                        :title="
-                          validError.txtBankAccountNumber
-                            ? 'Giá trị tài khoản ngân hàng không đúng.'
-                            : null
-                        "
-                      />
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input"
+                          ref="txtBankAccountNumber"
+                          v-model="employee.BankAccountNumber"
+                          @input="
+                            checkInputNumber('txtBankAccountNumber', $event)
+                          "
+                        />
+                      </el-tooltip>
                     </div>
                   </div>
                   <div class="m-col-2 m-pr-6">
@@ -351,18 +371,19 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">ĐT cố định</div>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input"
-                        ref="txtPhoneNumber"
-                        v-model="employee.PhoneNumber"
-                        @input="checkInputNumber('txtPhoneNumber', $event)"
-                        :title="
-                          validError.txtPhoneNumber
-                            ? 'Giá trị ĐT cố định không đúng.'
-                            : null
-                        "
-                      />
+                      <el-tooltip
+                        content="Giá trị ĐT cố định không đúng."
+                        :disabled="validError.txtPhoneNumber ? false : true"
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input"
+                          ref="txtPhoneNumber"
+                          v-model="employee.PhoneNumber"
+                          @input="checkInputNumber('txtPhoneNumber', $event)"
+                        />
+                      </el-tooltip>
                     </div>
                     <div class="m-input-100 m-pb-12">
                       <div class="m-flex-wrap">
@@ -381,18 +402,19 @@
                       <div class="m-flex-wrap">
                         <div class="m-input-title">Email</div>
                       </div>
-                      <input
-                        type="text"
-                        class="m-input"
-                        ref="txtEmail"
-                        v-model="employee.Email"
-                        @input="checkEmail"
-                        :title="
-                          validError.txtEmail
-                            ? 'Giá trị email không đúng.'
-                            : null
-                        "
-                      />
+                      <el-tooltip
+                        content="Giá trị email không đúng."
+                        :disabled="validError.txtEmail ? false : true"
+                        effect="danger"
+                      >
+                        <input
+                          type="text"
+                          class="m-input"
+                          ref="txtEmail"
+                          v-model="employee.Email"
+                          @input="checkEmail"
+                        />
+                      </el-tooltip>
                     </div>
                     <div class="m-input-100 m-pb-12">
                       <div class="m-flex-wrap">
@@ -427,36 +449,35 @@
                   </button>
                 </div>
                 <div class="m-popup-btn-right">
-                  <button
-                    class="
-                      m-button
-                      m-button-secondary
-                      m-button-size-default
-                      m-button-border-false
-                      m-popup-store-btn
-                    "
-                    @click="handleStoreEmployee"
-                    ref="btnStore"
-                  >
-                    <div class="m-button-text" title="Cất (Ctrl + S)">Cất</div>
-                  </button>
-                  <button
-                    class="
-                      m-button
-                      m-button-size-default
-                      m-button-border-false
-                      m-popup-store-and-add-btn
-                    "
-                    @click="handleStoreAndAdd"
-                    ref="btnStoreAndAdd"
-                  >
-                    <div
-                      class="m-button-text"
-                      title="Cất và thêm (Ctrl + Shift + S)"
+                  <el-tooltip content="Cất (Ctrl + S)">
+                    <button
+                      class="
+                        m-button
+                        m-button-secondary
+                        m-button-size-default
+                        m-button-border-false
+                        m-popup-store-btn
+                      "
+                      @click="handleStoreEmployee"
+                      ref="btnStore"
                     >
-                      Cất và thêm
-                    </div>
-                  </button>
+                      <div class="m-button-text">Cất</div>
+                    </button>
+                  </el-tooltip>
+                  <el-tooltip content="Cất và thêm (Ctrl + Shift + S)">
+                    <button
+                      class="
+                        m-button
+                        m-button-size-default
+                        m-button-border-false
+                        m-popup-store-and-add-btn
+                      "
+                      @click="handleStoreAndAdd"
+                      ref="btnStoreAndAdd"
+                    >
+                      <div class="m-button-text">Cất và thêm</div>
+                    </button>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -523,10 +544,11 @@ import { DialogMsg, EmployeeMsg } from "@/resources";
 import DatePicker from "vue-datepicker-next";
 import "vue-datepicker-next/index.css";
 import { DialogAction, FormMode } from "@/enums";
+import { ElTooltip } from "element-plus";
 
 export default {
   name: "EmployeeDetail",
-  components: { DatePicker },
+  components: { DatePicker, ElTooltip },
   data() {
     return {
       dropdownTop: 0,
@@ -718,6 +740,9 @@ export default {
     handleStoreEmployee() {
       try {
         const isValid = this.validationData();
+        this.employee.Gender = parseInt(
+          document.querySelector('input[name="Gender"]:checked').value
+        );
         if (isValid) {
           // Nếu editMode = 1, 3 => Thêm
           if (
@@ -918,6 +943,7 @@ export default {
         inputElm.classList.add("m-input-error");
         this.validError[ref] = true;
         this.employee[ref] = null;
+        this.employee[ref] = moment(val).format("YYYY-MM-DDThh:mm:ss");
       }
     },
     /**
@@ -1149,3 +1175,16 @@ export default {
   },
 };
 </script>
+
+<style>
+.el-popper.is-danger {
+  /* Set padding to ensure the height is 32px */
+  background: #f47575;
+  color: #fff;
+}
+
+.el-popper.is-danger .el-popper__arrow::before {
+  background: #f47575;
+  right: 0;
+}
+</style>

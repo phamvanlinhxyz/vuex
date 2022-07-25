@@ -60,16 +60,18 @@
             @click="searchEmployee"
           ></div>
         </div>
-        <div
-          class="m-refresh-button m-icon-24 m-icon-refresh"
-          @click="reloadData"
-          title="Lấy lại dữ liệu"
-        ></div>
-        <div
-          class="m-refresh-button m-icon-24 m-icon-excel"
-          @click="exportExcel"
-          title="Xuất ra Excel"
-        ></div>
+        <el-tooltip content="Lấy lại dữ liệu">
+          <div
+            class="m-refresh-button m-icon-24 m-icon-refresh"
+            @click="reloadData"
+          ></div>
+        </el-tooltip>
+        <el-tooltip content="Xuất ra Excel">
+          <div
+            class="m-refresh-button m-icon-24 m-icon-excel"
+            @click="exportExcel"
+          ></div>
+        </el-tooltip>
       </div>
     </div>
     <!-- Body table -->
@@ -107,6 +109,7 @@ import EmployeePaginationVue from "./EmployeePagination.vue";
 import EmployeeTableVue from "./EmployeeTable.vue";
 import axios from "axios";
 import fileDownload from "js-file-download";
+import { ElTooltip } from "element-plus";
 
 export default {
   name: "EmployeeList",
@@ -115,6 +118,7 @@ export default {
     EmployeeDialogVue,
     EmployeePaginationVue,
     EmployeeTableVue,
+    ElTooltip,
   },
   computed: mapState({
     contentHeaderTop: (state) => state.app.contentHeaderTop,

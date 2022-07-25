@@ -20,7 +20,7 @@
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 143px; width: 143px; top: -71px"
+          style="min-width: 143px; top: -71px"
         >
           <div class="m-th-title">Mã nhân viên</div>
         </th>
@@ -29,27 +29,27 @@
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 120px; width: 120px; top: -71px"
+          style="min-width: 120px; top: -71px"
         >
           <div class="m-th-title">Giới tính</div>
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 145px; width: 145px; top: -71px"
+          style="min-width: 145px; top: -71px"
         >
-          <div class="m-th-title" :style="{ justifyContent: 'center' }">
+          <div class="m-th-title" :style="{ justifyContent: 'center', padding: '0px' }">
             Ngày sinh
           </div>
         </th>
         <th
           class="m-th m-dynamoc-col"
-          style="min-width: 122px; width: 122px; top: -71px"
+          style="min-width: 122px;  top: -71px"
         >
           <div class="m-th-title">Chức danh</div>
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 200px; width: 200px; top: -71px"
+          style="min-width: 200px; top: -71px"
         >
           <div class="m-th-title">Số CMND</div>
         </th>
@@ -58,33 +58,32 @@
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 150px; width: 150px; top: -71px"
+          style="min-width: 150px;  top: -71px"
         >
           <div class="m-th-title">Số tài khoản</div>
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 250px; width: 250px; top: -71px"
+          style="min-width: 250px;top: -71px"
         >
           <div class="m-th-title">Tên ngân hàng</div>
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 250px; width: 250px; top: -71px"
+          style="min-width: 250px;  top: -71px"
         >
           <div class="m-th-title">Chi nhánh TK ngân hàng</div>
         </th>
         <th
           class="m-th m-dynamic-col"
-          style="min-width: 150px; width: 150px; top: -71px"
+          style="min-width: 150px; top: -71px"
         >
           <div class="m-th-title">Chi nhánh</div>
         </th>
         <th
           class="m-th m-th-widget"
           style="
-            right: 30px;
-            width: 120px;
+            right: 16px;
             min-width: 120px;
             top: -71px;
             z-index: 3;
@@ -185,7 +184,7 @@
             </div>
           </div>
         </td>
-        <td class="m-td m-td-widget" style="right: 30px">
+        <td class="m-td m-td-widget" style="right: 16px">
           <div class="m-skeleton">
             <div class="m-skeleton-text">
               <div class="m-skeleton-box"></div>
@@ -229,7 +228,7 @@
         <td class="m-td">{{ emp.BankName }}</td>
         <td class="m-td">{{ emp.BankBranchName }}</td>
         <td class="m-td">{{ emp.BankProvinceName }}</td>
-        <td class="m-td m-td-widget" style="right: 30px">
+        <td class="m-td m-td-widget" style="right: 16px">
           <div class="m-dropdown">
             <button
               class="
@@ -343,7 +342,7 @@
             </div>
           </div>
         </td>
-        <td class="m-td m-td-widget" style="right: 30px">
+        <td class="m-td m-td-widget" style="right: 16px">
           <div class="m-skeleton">
             <div class="m-skeleton-text">
               <div class="m-skeleton-box"></div>
